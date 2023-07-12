@@ -1,0 +1,10 @@
+.form-outline input.form-control {
+  padding-top: 8px;
+  padding-bottom: 8px;
+}
+
+.form-outline input.form-control:focus {
+  box-shadow: none;
+  border-color: #ced4da;
+}
+

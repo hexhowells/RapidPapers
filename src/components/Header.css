@@ -1,0 +1,13 @@
+@font-face {
+  font-family: 'NotoSerif-Medium';
+  src: url('../assets/fonts/NotoSerif/NotoSerif-Medium.ttf') format('truetype');
+}
+
+.title {
+  font-family: NotoSerif-Medium;
+  font-size: 25px;
+}
+
+.header {
+  background: #003866;
+}

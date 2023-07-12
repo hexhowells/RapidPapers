@@ -1,0 +1,15 @@
+.small-text {
+	font-size: 13px;
+}
+
+.date {
+	color: grey;
+}
+
+.result-container {
+  cursor: pointer;
+}
+
+a.paper-title:hover {
+	color: #045ca3;
+}
