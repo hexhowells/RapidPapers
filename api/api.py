@@ -34,8 +34,6 @@ def create_app():
 	@app.route('/paper')
 	def get_paper():
 		paper_id = request.args.get('id')
-		print(paper_id)
-		print(type(paper_id))
 		
 		return search.fetch_paper(paper_id)
 
