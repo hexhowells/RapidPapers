@@ -11,8 +11,7 @@ def paper_to_dict(paper):
 			'date': paper[3].strftime("%a, %d %b %Y"),
 			'categories': paper[4],
 			'authors': paper[5],
-			'doi': paper[6],
-			'arxiv_id': paper[7],
+			'arxiv_id': paper[6],
 			}
 
 
