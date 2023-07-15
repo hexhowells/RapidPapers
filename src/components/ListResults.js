@@ -31,7 +31,7 @@ const ListResults = (props: ListResultsProps) => {
 						<div className="col-md-12">
 							<div className="row">
 								<div className="col-md-12 result-container">
-								<Link className="nav-link paper-title" to={`paper/${item.id}`} key={item.id}>
+								<Link className="nav-link paper-title" to={`/paper/${item.id}`} key={item.id}>
 									<h5>{item.title}</h5>
 								</Link>
 									{/*<a className={item.authors ? "nav-link" : "nav-link disabled"} href="/"></a>*/}

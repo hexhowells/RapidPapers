@@ -1,4 +1,4 @@
-import {useParams} from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import React, { useState, useEffect } from 'react';
 
 import './Paper.css';
@@ -41,12 +41,17 @@ const Paper = () => {
 		      </div>
 		    </div>
 			<br></br>
-			<a className="btn btn-primary mt-3" 
+			<a className="btn btn-primary mt-3 me-2" 
 				href={`https://arxiv.org/abs/${paper.arxiv_id}`} 
 				target="_blank" rel="noopener noreferrer" 
 				role="button">
 				Read Paper
 			</a>
+			<Link to={`/similar/${paper.id}`} key={paper.id}>
+				<a className="btn btn-primary mt-3" role="button">
+					Find Similar
+			</a>
+			</Link>
 		</div>
 		</>
 		);

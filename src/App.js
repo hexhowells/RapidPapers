@@ -4,6 +4,7 @@ import Main from "./pages/Main";
 import About from "./pages/About";
 import Account from "./pages/Account";
 import Paper from "./pages/Paper";
+import Similar from "./pages/Similar";
 
 import Header from "./components/Header";
 import Footer from "./components/Footer"
@@ -20,6 +21,7 @@ function App() {
       <Route path="/about" element={<About/>}></Route>
       <Route path="/account" element={<Account/>}></Route>
       <Route path="/paper/:id" element={<Paper/>}></Route>
+      <Route path="/similar/:id" element={<Similar/>}></Route>
     </Routes>
     <Footer></Footer>
     </>
