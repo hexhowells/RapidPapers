@@ -24,6 +24,7 @@ def create_app():
 
 		if query != None:
 			faiss_ids, _ = search.faiss_search(faiss_index, query, num_results)
+			faiss_ids = list(set(faiss_ids))
 			results = search.search_paper(faiss_ids)
 		else:
 			results = search.get_most_recent(num_results)
