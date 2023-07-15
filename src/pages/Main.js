@@ -9,7 +9,7 @@ const Main = () => {
   const [results, setResults] = useState(0);
 
     useEffect(() => {
-      fetch('/search')
+      fetch('/api/v1/search')
         .then((res) => res.json())
         .then((data) => {
           setResults(data.results);

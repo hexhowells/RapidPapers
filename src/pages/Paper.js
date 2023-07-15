@@ -8,7 +8,7 @@ const Paper = () => {
 	const [paper, setPaper] = useState(0);
 
 	useEffect(() => {
-      fetch(`/paper?id=${id}`)
+      fetch(`/api/v1/paper?id=${id}`)
         .then((res) => res.json())
         .then((data) => {
           setPaper(data);

@@ -16,7 +16,7 @@ def create_app():
 	faiss_index = load_index()
 
 
-	@app.route('/search')
+	@app.route('/api/v1/search')
 	def search_papers():
 		query = request.args.get('query')
 		num_results = request.args.get('num_results')
@@ -31,7 +31,7 @@ def create_app():
 		return {'results': results}
 
 
-	@app.route('/paper')
+	@app.route('/api/v1/paper')
 	def get_paper():
 		paper_id = request.args.get('id')
 		
@@ -41,3 +41,4 @@ def create_app():
 
 
 app = create_app()
+
