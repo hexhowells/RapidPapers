@@ -1,23 +1,13 @@
 import './ListResults.css';
 import {Link} from "react-router-dom";
 
-interface ResultItem {
-	question: string;
-	answer: string;
-	ai: string;
-	author: string;
-}
 
-interface ListResultsProps {
-	results: ResultItem[];
-}
-
-const ListResults = (props: ListResultsProps) => {
+const ListResults = (props) => {
 	return (
 		<>
 		<ul className="list-group">
 		{!props.results ? null : props.results.map((item, index) => (
-			<li className="list-group-item pt-4 pb-4 mb-3 rounded" key={item.question}>
+			<li className="list-group-item pt-4 pb-4 mb-3 rounded" key={item.title}>
 				
 				<div className="container-fluid">
 					<div className="row">
