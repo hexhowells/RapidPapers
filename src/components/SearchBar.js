@@ -17,7 +17,6 @@ const SearchBar = ({ setResults }) => {
 		try {
 			const response = await fetch(`/api/v1/search?query=${query}`);
 			const data = await response.json();
-			console.log(data);
 			setResults(data.results);
 		} catch (error) {
 			console.error('Error:', error);
