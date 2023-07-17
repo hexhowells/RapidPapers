@@ -21,7 +21,7 @@ const Main = () => {
       .catch((error) => {
         console.error('Error fetching data from backend:', error);
       });
-  }, [searchQuery]);
+  }, [searchQuery, sortType]);
 
   return (
     <>
@@ -29,7 +29,7 @@ const Main = () => {
       <div className="container">
         <SearchBar setSearchQuery={setSearchQuery}></SearchBar>
 
-        <HeaderResults></HeaderResults>
+        <HeaderResults setSortType={setSortType}></HeaderResults>
         <ListResults results={results}></ListResults>
       </div>
     </div>

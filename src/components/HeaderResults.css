@@ -1,0 +1,7 @@
+.form-select:hover {
+	cursor: pointer;
+}
+
+.form-select {
+	box-shadow: none !important;
+}
