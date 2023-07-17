@@ -30,7 +30,6 @@ def search_paper(results):
 
 	#papers = [(database.fetch(str(result))[0], d) for result, d in zip(results, dists)]
 	papers = [database.fetch_paper(str(result))[0] for result in results]
-	papers = sorted(papers, key=lambda x: x[3], reverse=True)
 	
 	papers_dict = []
 	for paper in papers:
