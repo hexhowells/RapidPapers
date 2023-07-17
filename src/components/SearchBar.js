@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import './SearchBar.css';
 
-const SearchBar = ({ setResults }) => {
+const SearchBar = ({ setSearchQuery }) => {
 	const [query, setQuery] = useState('');
 
 	const handleInputChange = (e) => {
@@ -13,15 +13,9 @@ const SearchBar = ({ setResults }) => {
 		if (!query) {
 			return;
 		}
-
-		try {
-			const response = await fetch(`/api/v1/search?query=${query}`);
-			const data = await response.json();
-			setResults(data.results);
-		} catch (error) {
-			console.error('Error:', error);
-		}
+		setSearchQuery(query);
 	};
+
 	return (
 		<>
 			<div className="form-outline pb-4">
@@ -37,7 +31,7 @@ const SearchBar = ({ setResults }) => {
 	  			</form>
 			</div>
 		</>
-		);
+	);
 }
 
 export default SearchBar;
