@@ -8,28 +8,20 @@ import React, { useState, useEffect } from 'react';
 const Main = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [results, setResults] = useState(0);
+  const [sortType, setSortType] = useState('relevant')
 
-    useEffect(() => {
-      fetch('/api/v1/search')
-        .then((res) => res.json())
-        .then((data) => {
-          setResults(data.results);
-        })
-        .catch((error) => {
-          console.error('Error fetching data from backend:', error);
-        });
-    }, []);
+  useEffect(() => {
+    var api_request = (searchQuery) ? `/api/v1/search?query=${searchQuery}&sort=${sortType}` : `/api/v1/search`;
 
-    useEffect(() => {
-      fetch(`/api/v1/search?query=${searchQuery}`)
-        .then((res) => res.json())
-        .then((data) => {
-          setResults(data.results);
-        })
-        .catch((error) => {
-          console.error('Error fetching data from backend:', error);
-        });
-    }, [searchQuery]);
+    fetch(api_request)
+      .then((res) => res.json())
+      .then((data) => {
+        setResults(data.results);
+      })
+      .catch((error) => {
+        console.error('Error fetching data from backend:', error);
+      });
+  }, [searchQuery]);
 
   return (
     <>
