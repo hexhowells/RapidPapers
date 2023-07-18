@@ -48,9 +48,7 @@ const Paper = () => {
 				Read Paper
 			</a>
 			<Link to={`/similar/${paper.id}`} key={paper.id}>
-				<a className="btn btn-info mt-3" role="button">
-					Find Similar
-			</a>
+				<button className="btn btn-info mt-3">Find Similar</button>
 			</Link>
 		</div>
 		</>
