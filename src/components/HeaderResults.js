@@ -1,4 +1,3 @@
-import Dropdown from 'react-bootstrap/Dropdown';
 import './HeaderResults.css';
 
 const HeaderResults = ({setSortType}) => {
