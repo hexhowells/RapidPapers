@@ -9,9 +9,10 @@ import React, { useState, useEffect } from 'react';
 const Main = () => {
   const { id } = useParams();
   const [results, setResults] = useState(0);
+  const [sortType, setSortType] = useState('relevant');
 
     useEffect(() => {
-      fetch(`/api/v1/similar?id=${id}`)
+      fetch(`/api/v1/similar?id=${id}&sort=${sortType}`)
         .then((res) => res.json())
         .then((data) => {
           setResults(data.results);
@@ -19,15 +20,15 @@ const Main = () => {
         .catch((error) => {
           console.error('Error fetching data from backend:', error);
         });
-    }, []);
+    }, [id, sortType]);
 
   return (
     <>
     <div>
       <div className="container">
-        <SearchBar setResults={setResults}></SearchBar>
+        {/*<SearchBar setResults={setResults}></SearchBar>*/}
 
-        <HeaderResults></HeaderResults>
+        <HeaderResults setSortType={setSortType}></HeaderResults>
         <ListResults results={results}></ListResults>
       </div>
     </div>

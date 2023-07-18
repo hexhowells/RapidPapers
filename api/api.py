@@ -52,14 +52,19 @@ def create_app():
 	@app.route('/api/v1/similar')
 	def search_similar():
 		paper_id = request.args.get('id')
+
 		num_results = request.args.get('num_results')
 		num_results = num_results if (num_results != None) else 50
+
+		sort_type = request.args.get('sort')
+		sort_type = sort_type if (sort_type != None) else 'relevant'
 
 		paper = search.fetch_paper(paper_id)
 
 		faiss_ids, _ = search.faiss_search(faiss_index, paper['abstract'], num_results)
 		faiss_ids = list(set(faiss_ids))
 		results = search.search_paper(faiss_ids)
+		results = sort_papers(results, sort_type)
 
 		return {'results': results}
 
