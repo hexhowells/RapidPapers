@@ -1,4 +1,3 @@
-import SearchBar from "../components/SearchBar";
 import ListResults from "../components/ListResults";
 import HeaderResults from "../components/HeaderResults";
 
