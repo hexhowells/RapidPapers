@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import './SearchBar.css';
 
-const SearchBar = ({ setSearchQuery }) => {
+const SearchBar = ({ setSearchQuery, setPageNum }) => {
 	const [query, setQuery] = useState('');
 
 	const handleInputChange = (e) => {
@@ -14,6 +14,7 @@ const SearchBar = ({ setSearchQuery }) => {
 			return;
 		}
 		setSearchQuery(query);
+		setPageNum(1);
 	};
 
 	return (

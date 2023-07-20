@@ -25,8 +25,15 @@ class PSQL:
 		return records
 
 
-	def fetch_all(self, num_results):
-		self.cursor.execute("SELECT * FROM papers ORDER BY publish_date DESC LIMIT %s", [num_results])
+	def fetch_all(self, num_results, page):
+		self.cursor.execute(
+			"SELECT * \
+			FROM papers \
+			ORDER BY publish_date DESC \
+			LIMIT %s \
+			OFFSET %s", 
+			[num_results, ((page - 1) * num_results)]
+			)
 		records = self.cursor.fetchall()
 		return records
 

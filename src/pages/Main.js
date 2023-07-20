@@ -1,6 +1,7 @@
 import SearchBar from "../components/SearchBar";
 import ListResults from "../components/ListResults";
 import HeaderResults from "../components/HeaderResults";
+import Pagination from "../components/Pagination";
 
 import React, { useState, useEffect } from 'react';
 
@@ -9,9 +10,14 @@ const Main = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [results, setResults] = useState(0);
   const [sortType, setSortType] = useState('relevant')
+  const [pageNum, setPageNum] = useState(1);
+  const [numPages, setNumPages] = useState(100);
 
   useEffect(() => {
-    var api_request = (searchQuery) ? `/api/v1/search?query=${searchQuery}&sort=${sortType}` : `/api/v1/search`;
+    if (searchQuery)
+      var api_request = `/api/v1/search?query=${searchQuery}&sort=${sortType}&page=${pageNum}`;
+    else
+      var api_request = `/api/v1/search?page=${pageNum}`;
 
     fetch(api_request)
       .then((res) => res.json())
@@ -21,16 +27,17 @@ const Main = () => {
       .catch((error) => {
         console.error('Error fetching data from backend:', error);
       });
-  }, [searchQuery, sortType]);
+  }, [searchQuery, sortType, pageNum]);
 
   return (
     <>
     <div>
       <div className="container">
-        <SearchBar setSearchQuery={setSearchQuery}></SearchBar>
+        <SearchBar setSearchQuery={setSearchQuery} setPageNum={setPageNum}></SearchBar>
 
-        <HeaderResults setSortType={setSortType}></HeaderResults>
+        <HeaderResults setSortType={setSortType} setPageNum={setPageNum}></HeaderResults>
         <ListResults results={results}></ListResults>
+        <Pagination pageNum={pageNum} setPageNum={setPageNum} numPages={numPages}></Pagination>
       </div>
     </div>
     </>

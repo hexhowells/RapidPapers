@@ -43,10 +43,10 @@ def fetch_paper(paper_id):
 	return paper_to_dict( database.fetch_paper(paper_id)[0] )
 
 
-def get_most_recent(num_results):
+def get_most_recent(num_results, page_num):
 	database = PSQL()
 
-	papers = database.fetch_all(num_results)
+	papers = database.fetch_all(num_results, page_num)
 	
 	papers_dict = []
 	for paper in papers:
