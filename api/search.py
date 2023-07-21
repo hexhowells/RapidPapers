@@ -15,14 +15,16 @@ def paper_to_dict(paper):
 			}
 
 
-def faiss_search(index, query, num_results):
+def faiss_search(index, query, threshold=0.7):
 	model = SentenceTransformer('all-MiniLM-L6-v2')
 
 	query_embedding = model.encode([query])
 
-	dist, result_indexes = index.search(query_embedding, k=num_results)
+	_, dists, result_indexes = index.range_search(query_embedding, thresh=threshold)
 
-	return result_indexes[0], dist[0]
+	indicies = [x for _,x in sorted(zip(dists, result_indexes))]
+
+	return indicies
 
 
 def search_paper(results):
