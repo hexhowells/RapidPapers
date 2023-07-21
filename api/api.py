@@ -42,12 +42,12 @@ def create_app():
 		page_num = int(page_num) if (page_num != None) else 1
 
 		if query != None:
-			_num_results = num_results * page_num
+			page_index = num_results * page_num
 			faiss_ids = search.faiss_search(faiss_index, query, threshold=1.2)
 
 			results = search.search_paper(faiss_ids)
 			results = sort_papers(results, sort_type)
-			results = results[_num_results-num_results: _num_results]
+			results = results[page_index-num_results: page_index]
 		else:
 			results = search.get_most_recent(num_results, page_num)
 
@@ -64,12 +64,17 @@ def create_app():
 		sort_type = request.args.get('sort')
 		sort_type = sort_type if (sort_type != None) else 'relevant'
 
+		page_num = request.args.get('page')
+		page_num = int(page_num) if (page_num != None) else 1
+
 		paper = search.fetch_paper(paper_id)
 
-		faiss_ids = search.faiss_search(faiss_index, paper['abstract'], num_results)
+		page_index = num_results * page_num
+		faiss_ids = search.faiss_search(faiss_index, paper['abstract'])
 
 		results = search.search_paper(faiss_ids)
 		results = sort_papers(results, sort_type)
+		results = results[page_index-num_results: page_index]
 
 		return {'results': results}
 
