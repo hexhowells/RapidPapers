@@ -22,6 +22,7 @@ const Main = () => {
     fetch(api_request)
       .then((res) => res.json())
       .then((data) => {
+        setNumPages(Math.ceil(data.num_results / 50));
         setResults(data.results);
       })
       .catch((error) => {

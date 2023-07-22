@@ -17,6 +17,7 @@ const Main = () => {
       fetch(`/api/v1/similar?id=${id}&sort=${sortType}&page=${pageNum}`)
         .then((res) => res.json())
         .then((data) => {
+          setNumPages(Math.ceil(data.num_results / 50));
           setResults(data.results);
         })
         .catch((error) => {

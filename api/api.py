@@ -32,8 +32,8 @@ def create_app():
 	def search_papers():
 		query = request.args.get('query')
 
-		num_results = request.args.get('num_results')
-		num_results = num_results if (num_results != None) else 50
+		results_per_page = request.args.get('num_results')
+		results_per_page = results_per_page if (results_per_page != None) else 50
 
 		sort_type = request.args.get('sort')
 		sort_type = sort_type if (sort_type != None) else 'relevant'
@@ -42,24 +42,26 @@ def create_app():
 		page_num = int(page_num) if (page_num != None) else 1
 
 		if query != None:
-			page_index = num_results * page_num
+			page_index = results_per_page * page_num
 			faiss_ids = search.faiss_search(faiss_index, query, threshold=1.2)
 
 			results = search.search_paper(faiss_ids)
 			results = sort_papers(results, sort_type)
-			results = results[page_index-num_results: page_index]
+			num_found = len(results)
+			results = results[page_index-results_per_page: page_index]
 		else:
-			results = search.get_most_recent(num_results, page_num)
+			num_found = results_per_page * 100
+			results = search.get_most_recent(results_per_page, page_num)
 
-		return {'results': results}
+		return {'results': results, 'num_results': num_found}
 
 
 	@app.route('/api/v1/similar')
 	def search_similar():
 		paper_id = request.args.get('id')
 
-		num_results = request.args.get('num_results')
-		num_results = num_results if (num_results != None) else 50
+		results_per_page = request.args.get('num_results')
+		results_per_page = results_per_page if (results_per_page != None) else 50
 
 		sort_type = request.args.get('sort')
 		sort_type = sort_type if (sort_type != None) else 'relevant'
@@ -69,14 +71,15 @@ def create_app():
 
 		paper = search.fetch_paper(paper_id)
 
-		page_index = num_results * page_num
+		page_index = results_per_page * page_num
 		faiss_ids = search.faiss_search(faiss_index, paper['abstract'])
 
 		results = search.search_paper(faiss_ids)
 		results = sort_papers(results, sort_type)
-		results = results[page_index-num_results: page_index]
+		num_found = len(results)
+		results = results[page_index-results_per_page: page_index]
 
-		return {'results': results}
+		return {'results': results, 'num_results': num_found}
 
 
 	@app.route('/api/v1/paper')
