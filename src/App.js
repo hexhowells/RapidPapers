@@ -5,6 +5,7 @@ import About from "./pages/About";
 import Account from "./pages/Account";
 import Paper from "./pages/Paper";
 import Similar from "./pages/Similar";
+import Login from "./pages/Login";
 
 import Header from "./components/Header";
 import Footer from "./components/Footer"
@@ -22,6 +23,7 @@ function App() {
       <Route path="/account" element={<Account/>}></Route>
       <Route path="/paper/:id" element={<Paper/>}></Route>
       <Route path="/similar/:id" element={<Similar/>}></Route>
+      <Route path="/login" element={<Login/>}></Route>
     </Routes>
     <Footer></Footer>
     </>
