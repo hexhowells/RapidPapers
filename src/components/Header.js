@@ -24,10 +24,10 @@ const Header = () => {
 				    </Link>
 				    <div className="collapse navbar-collapse" id="navbarNav">
 				      <ul className="navbar-nav ms-auto">
-				        <li className="nav-item pe-4">
+				        <li className="nav-item pe-2">
 				        	<Link className="nav-link link-light" to="/about">About</Link>
 				        </li>
-				        <li className="nav-item">
+				        <li className="nav-item pe-2">
 				        	<Link className="nav-link link-light" to="/account">Account</Link>
 				        </li>
 				        <li className="nav-item">
