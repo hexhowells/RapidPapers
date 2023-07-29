@@ -18,8 +18,19 @@ const Account = () => {
         });
     }, []);
 
+    const handleLogout = () => {
+        axios.post('/logout')
+        .then(() => {
+            setUser(null);
+            window.location.href = '/';
+        })
+        .catch(err => {
+            setError(err.toString());
+        });
+    }
+
     if (loading) return <p>Loading...</p>;
-    if (error) return <p>{error}</p>;
+    if (error) window.location.href = '/';
 
     return (
         <div className="container">
@@ -28,6 +39,7 @@ const Account = () => {
                 <div>
                     <p>Username: {user.username}</p>
                     <p>Email Address: {user.email}</p>
+                    <button className="btn btn-primary" onClick={handleLogout}>Logout</button>
                 </div>
             )}
         </div>

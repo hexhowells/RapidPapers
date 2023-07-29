@@ -197,6 +197,14 @@ def create_app():
 	    return jsonify(user_data), 200
 
 
+	@app.route('/logout', methods=['POST'])
+	def logout():
+		response = make_response(redirect('/'), 200)
+		response.set_cookie('access_token_cookie', '', expires=0)
+
+		return response
+
+
 	@app.route('/api/v1/search')
 	def search_papers():
 		query = request.args.get('query')
