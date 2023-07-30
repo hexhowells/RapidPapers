@@ -210,13 +210,16 @@ def create_app():
 			return make_response('Paper ID not found', 401)
 
 		upvote_status = psql.check_vote(user_id, paper_id)
-		print(upvote_status)
 
-		if upvote_status and upvote_status[0] == "up":
-			return make_response('Already upvoted', 409)
-		else:
+		if not upvote_status:
 			psql.upvote_paper(user_id, paper_id)
-			return make_response('', 204)
+			return make_response(jsonify({"upvotes": psql.get_paper_upvotes(paper_id)}), 200)
+		elif upvote_status[0] == "up":
+			psql.undo_paper_vote(user_id, paper_id, -1)
+			return make_response(jsonify({"upvotes": psql.get_paper_upvotes(paper_id)}), 200)
+		else:
+			psql.upvote_paper(user_id, paper_id, 2)
+			return make_response(jsonify({"upvotes": psql.get_paper_upvotes(paper_id)}), 200)
 
 
 	@app.route('/downvote', methods=['POST'])
@@ -232,28 +235,34 @@ def create_app():
 
 		upvote_status = psql.check_vote(user_id, paper_id)
 
-		if upvote_status and upvote_status[0] == "down":
-			return make_response('Already downvoted', 409)
-		else:
+		if not upvote_status:
 			psql.downvote_paper(user_id, paper_id)
-			return make_response('', 204)
+			return make_response(jsonify({"upvotes": psql.get_paper_upvotes(paper_id)}), 200)
+		elif upvote_status[0] == "down":
+			psql.undo_paper_vote(user_id, paper_id, 1)
+			return make_response(jsonify({"upvotes": psql.get_paper_upvotes(paper_id)}), 200)
+		else:
+			psql.downvote_paper(user_id, paper_id, -2)
+			return make_response(jsonify({"upvotes": psql.get_paper_upvotes(paper_id)}), 200)
 
 
-	# @app.route('/undovote', methods=['POST'])
-	# @jwt_required()
-	# def undo_vote_paper():
-	# 	user_id = get_jwt_identity()
-	# 	if not user_id:
-	# 	 abort(401)
+	@app.route('/uservote', methods=['GET'])
+	@jwt_required()
+	def get_user_vote():
+		user_id = get_jwt_identity()
+		if not user_id:
+			abort(401)
 
-	# 	paper_id = request.form['paper_id']
-	# 	upvote_status = psql.check_vote(user_id, paper_id)
+		paper_id = request.args.get('paper_id')
+		if not paper_id:
+			return make_response('Paper ID not found', 401)
 
-	# 	if upvote_status == None:
-	# 		return make_response('No vote found', 409)
-	# 	else:
-	# 		psql.undo_paper_vote(user_id, paper_id)
-	# 		return make_response('', 204)
+		upvote_status = psql.check_vote(user_id, paper_id)
+
+		if not upvote_status:
+			return make_response(jsonify({"user_vote": None}), 200)
+		else:
+			return make_response(jsonify({"user_vote": upvote_status[0]}), 200)
 
 
 	@app.route('/logout', methods=['POST'])

@@ -108,7 +108,7 @@ class PSQL:
 		self.conn.commit()
 
 
-	def upvote_paper(self, user_id, paper_id):
+	def upvote_paper(self, user_id, paper_id, vote_change=1):
 		self.cursor.execute(
 			"INSERT INTO user_votes \
 			(user_id, paper_id, vote) VALUES (%s, %s, %s) \
@@ -117,10 +117,10 @@ class PSQL:
         	[user_id, paper_id, "up", "up"]
 			)
 		self.conn.commit()
-		self._update_paper_vote(paper_id, 1)
+		self._update_paper_vote(paper_id, vote_change)
 
 
-	def downvote_paper(self, user_id, paper_id):
+	def downvote_paper(self, user_id, paper_id, vote_change=-1):
 		self.cursor.execute(
 			"INSERT INTO user_votes \
 			(user_id, paper_id, vote) VALUES (%s, %s, %s) \
@@ -129,5 +129,32 @@ class PSQL:
         	[user_id, paper_id, "down", "down"]
 			)
 		self.conn.commit()
-		self._update_paper_vote(paper_id, -1)
+		self._update_paper_vote(paper_id, vote_change)
+
+
+	def undo_paper_vote(self, user_id, paper_id, vote_change):
+		self.cursor.execute(
+			"DELETE FROM user_votes \
+			WHERE user_id = %s \
+			AND paper_id = %s",
+        	[user_id, paper_id]
+			)
+		self.conn.commit()
+		self._update_paper_vote(paper_id, vote_change)
+
+
+	def get_paper_upvotes(self, paper_id):
+		self.cursor.execute(
+			"SELECT upvotes \
+			FROM papers \
+			WHERE id = %s",
+        	[paper_id]
+			)
+		upvotes = self.cursor.fetchone()
+		self.conn.commit()
+		
+		if upvotes:
+			return upvotes[0]
+		else:
+			return None
 

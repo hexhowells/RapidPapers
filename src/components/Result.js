@@ -1,4 +1,5 @@
 import {Link} from "react-router-dom";
+import { useState, useEffect } from 'react';
 import { BsFillCaretUpFill, BsFillCaretDownFill, BsFillBookmarkFill } from "react-icons/bs";
 import axios from 'axios';
 import './Result.css'
@@ -7,9 +8,29 @@ import './Result.css'
 const Result = (props) => {
 	const {item} = props;
 
+	const [upvotes, setUpvotes] = useState(item.upvotes);
+	const [userVote, setUserVote] = useState(null);
+
+	useEffect(() => {
+		setUpvotes(item.upvotes);
+		fetchUserVote(item.id);
+	}, [item]);
+
+
+	const fetchUserVote = async (id) => {
+        try {
+            const res = await axios.get(`/uservote?paper_id=${item.id}`);
+            setUserVote(res.data.user_vote);  // Update based on server response
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
 	const upvote = async () => {
         try {
-            await axios.post('/upvote', { paper_id: item.id });
+            const res = await axios.post('/upvote', { paper_id: item.id });
+            setUpvotes(res.data.upvotes);
+            fetchUserVote(item.id);
         } catch (error) {
             console.error(error);
         }
@@ -17,7 +38,9 @@ const Result = (props) => {
 
     const downvote = async () => {
         try {
-            await axios.post('/downvote', { paper_id: item.id });
+            const res = await axios.post('/downvote', { paper_id: item.id });
+            setUpvotes(res.data.upvotes);
+            fetchUserVote(item.id);
         } catch (error) {
             console.error(error);
         }
@@ -37,11 +60,11 @@ const Result = (props) => {
 			<div className="container-fluid">
 				<div className="row">
 					<div className="col-md-1">
-						<button onClick={upvote} className="btn btn-primary m-auto btn-square">
+						<button onClick={upvote} className={`btn  m-auto btn-square ${userVote === 'up' ? 'btn-success' : 'btn-primary'}`}>
 		                    <BsFillCaretUpFill size={15}/>
 		                </button>
-		                <p className="text-center my-1">{item.upvotes}</p>
-		                <button onClick={downvote} className="btn btn-primary m-auto btn-square">
+		                <p className="text-center my-1">{upvotes}</p>
+		                <button onClick={downvote} className={`btn m-auto btn-square ${userVote === 'down' ? 'btn-danger' : 'btn-primary'}`}>
 		                    <BsFillCaretDownFill size={15}/>
 		                </button>
 		                <button onClick={bookmark} className="btn btn-primary m-auto mt-4 btn-square">
