@@ -178,7 +178,7 @@ def create_app():
 		
 		user = User(id=user_data['id'], username=user_data['username'], email=user_data['email'])
 
-		access_token = create_access_token(identity=user.id)
+		access_token = create_access_token(identity=user.id, expires_delta=False)
 		res = make_response(redirect('http://127.0.0.1:9000/'))
 		res.set_cookie('access_token_cookie', access_token, secure=False, httponly=True, samesite='Lax', domain='127.0.0.1')
 
