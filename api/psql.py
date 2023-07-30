@@ -82,3 +82,52 @@ class PSQL:
 		self.conn.commit()
 
 		return convert_user_to_dict(user_data)
+
+
+	def check_vote(self, user_id, paper_id):
+		self.cursor.execute(
+			"SELECT vote \
+			FROM user_votes \
+			WHERE user_id = %s \
+			AND paper_id = %s",
+			[user_id, paper_id]
+			)
+		user_data = self.cursor.fetchone()
+		self.conn.commit()
+
+		return user_data
+
+
+	def _update_paper_vote(self, paper_id, value):
+		self.cursor.execute(
+			"UPDATE papers \
+			SET upvotes = upvotes + %s \
+        	WHERE id = %s",
+        	[value, paper_id]
+			)
+		self.conn.commit()
+
+
+	def upvote_paper(self, user_id, paper_id):
+		self.cursor.execute(
+			"INSERT INTO user_votes \
+			(user_id, paper_id, vote) VALUES (%s, %s, %s) \
+        	ON CONFLICT (user_id, paper_id) \
+        	DO UPDATE SET vote = %s",
+        	[user_id, paper_id, "up", "up"]
+			)
+		self.conn.commit()
+		self._update_paper_vote(paper_id, 1)
+
+
+	def downvote_paper(self, user_id, paper_id):
+		self.cursor.execute(
+			"INSERT INTO user_votes \
+			(user_id, paper_id, vote) VALUES (%s, %s, %s) \
+        	ON CONFLICT (user_id, paper_id) \
+        	DO UPDATE SET vote = %s",
+        	[user_id, paper_id, "down", "down"]
+			)
+		self.conn.commit()
+		self._update_paper_vote(paper_id, -1)
+

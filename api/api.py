@@ -72,7 +72,7 @@ def create_app():
 	app.config["JWT_TOKEN_LOCATION"] = ["cookies"]  # Enable JWT extraction from cookies
 	app.config["JWT_SECRET_KEY"] = config.jwt_secret_key
 	app.config["JWT_COOKIE_SECURE"] = True  # Use secure cookies for production (over HTTPS only)
-	app.config["JWT_COOKIE_CSRF_PROTECT"] = True  # Enable CSRF protection
+	app.config["JWT_COOKIE_CSRF_PROTECT"] = False
 
 	app.config['OAUTH2_PROVIDERS'] = {
 		# Google OAuth 2.0 documentation:
@@ -195,6 +195,65 @@ def create_app():
 	        return jsonify({"msg": "User not found"}), 404
 
 	    return jsonify(user_data), 200
+
+
+	@app.route('/upvote', methods=['POST'])
+	@jwt_required()
+	def upvote_paper():
+		user_id = get_jwt_identity()
+		if not user_id:
+			print("No user id found: ", user_id)
+			abort(401)
+
+		paper_id = request.json['paper_id']
+		if not paper_id:
+			return make_response('Paper ID not found', 401)
+
+		upvote_status = psql.check_vote(user_id, paper_id)
+		print(upvote_status)
+
+		if upvote_status and upvote_status[0] == "up":
+			return make_response('Already upvoted', 409)
+		else:
+			psql.upvote_paper(user_id, paper_id)
+			return make_response('', 204)
+
+
+	@app.route('/downvote', methods=['POST'])
+	@jwt_required()
+	def downvote_paper():
+		user_id = get_jwt_identity()
+		if not user_id:
+		 abort(401)
+
+		paper_id = request.json['paper_id']
+		if not paper_id:
+			return make_response('Paper ID not found', 401)
+
+		upvote_status = psql.check_vote(user_id, paper_id)
+
+		if upvote_status and upvote_status[0] == "down":
+			return make_response('Already downvoted', 409)
+		else:
+			psql.downvote_paper(user_id, paper_id)
+			return make_response('', 204)
+
+
+	# @app.route('/undovote', methods=['POST'])
+	# @jwt_required()
+	# def undo_vote_paper():
+	# 	user_id = get_jwt_identity()
+	# 	if not user_id:
+	# 	 abort(401)
+
+	# 	paper_id = request.form['paper_id']
+	# 	upvote_status = psql.check_vote(user_id, paper_id)
+
+	# 	if upvote_status == None:
+	# 		return make_response('No vote found', 409)
+	# 	else:
+	# 		psql.undo_paper_vote(user_id, paper_id)
+	# 		return make_response('', 204)
 
 
 	@app.route('/logout', methods=['POST'])

@@ -12,6 +12,7 @@ def paper_to_dict(paper):
 			'categories': paper[4],
 			'authors': paper[5],
 			'arxiv_id': paper[6],
+			'upvotes': paper[7]
 			}
 
 
