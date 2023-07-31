@@ -186,6 +186,16 @@ class PSQL:
 		return status
 
 
+	def remove_user_paper(self, user_id, paper_id):
+		self.cursor.execute(
+			"DELETE FROM user_papers \
+			WHERE user_id = %s \
+        	AND paper_id = %s",
+        	[user_id, paper_id]
+			)
+		self.conn.commit()
+
+
 	def get_user_papers(self, user_id):
 		self.cursor.execute(
 			"SELECT p.id, p.title, p.abstract, p.publish_date, \

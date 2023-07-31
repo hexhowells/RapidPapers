@@ -279,10 +279,24 @@ def create_app():
 		if 'status' not in request.json: return make_response('Status not found', 401)
 		status = request.json['status']
 
-		paper_status = psql.check_user_paper(user_id, paper_id)
-
 		psql.set_user_paper(user_id, paper_id, status)
+
 		return make_response(jsonify({"user_paper_status": status}), 200)
+
+
+	@app.route('/removepaper', methods=['POST'])
+	@jwt_required()
+	def remove_user_paper():
+		user_id = get_jwt_identity()
+		if not user_id:
+			abort(401)
+
+		paper_id = request.json['paper_id']
+		if not paper_id: return make_response('Paper ID not found', 401)
+
+		psql.remove_user_paper(user_id, paper_id)
+
+		return make_response('', 200)
 
 
 	@app.route('/getuserpapers', methods=['GET'])
