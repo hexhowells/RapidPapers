@@ -28,11 +28,11 @@ function Pagination({ pageNum, setPageNum, numPages }) {
         <nav aria-label="Page navigation">
             <ul className="pagination justify-content-center">
                 <li className={`page-item ${pageNum === firstPage ? 'disabled' : ''}`}>
-                    <a className="page-link" href="#" onClick={handlePrev}>Previous</a>
+                    <a className="page-link" href="/#" onClick={handlePrev}>Previous</a>
                 </li>
 
                 <li className={`page-item ${firstPage === pageNum ? 'active' : ''}`}>
-                    <a className="page-link" href="#" onClick={() => handlePageChange(firstPage)}>{firstPage}</a>
+                    <a className="page-link" href="/#" onClick={() => handlePageChange(firstPage)}>{firstPage}</a>
                 </li>
 
                 {startPage > firstPage + 1 && <li className="page-item"><span className="page-link">...</span></li>}
@@ -40,7 +40,7 @@ function Pagination({ pageNum, setPageNum, numPages }) {
                 {pages.map(page =>
                     page !== firstPage && page !== lastPage && (
                         <li className={`page-item ${page === pageNum ? 'active' : ''}`} key={page}>
-                            <a className="page-link" href="#" onClick={() => handlePageChange(page)}>
+                            <a className="page-link" href="/#" onClick={() => handlePageChange(page)}>
                                 {page}
                                 {page === pageNum && <span className="sr-only"></span>}
                             </a>
@@ -51,11 +51,11 @@ function Pagination({ pageNum, setPageNum, numPages }) {
                 {endPage < lastPage - 1 && <li className="page-item"><span className="page-link">...</span></li>}
 
                 <li className={`page-item ${lastPage === pageNum ? 'active' : ''}`}>
-                    <a className="page-link" href="#" onClick={() => handlePageChange(lastPage)}>{lastPage}</a>
+                    <a className="page-link" href="/#" onClick={() => handlePageChange(lastPage)}>{lastPage}</a>
                 </li>
 
                 <li className={`page-item ${pageNum === lastPage ? 'disabled' : ''}`}>
-                    <a className="page-link" href="#" onClick={handleNext}>Next</a>
+                    <a className="page-link" href="/#" onClick={handleNext}>Next</a>
                 </li>
             </ul>
         </nav>

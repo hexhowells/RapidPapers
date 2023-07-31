@@ -1,5 +1,4 @@
 import './ListResults.css';
-import {Link} from "react-router-dom";
 import Result from "./Result"
 
 

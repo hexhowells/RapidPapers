@@ -14,10 +14,11 @@ const Main = () => {
   const [numPages, setNumPages] = useState(100);
 
   useEffect(() => {
+    var api_request;
     if (searchQuery)
-      var api_request = `/api/v1/search?query=${searchQuery}&sort=${sortType}&page=${pageNum}`;
+      api_request = `/api/v1/search?query=${searchQuery}&sort=${sortType}&page=${pageNum}`;
     else
-      var api_request = `/api/v1/search?page=${pageNum}`;
+      api_request = `/api/v1/search?page=${pageNum}`;
 
     fetch(api_request)
       .then((res) => res.json())
