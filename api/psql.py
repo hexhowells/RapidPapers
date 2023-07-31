@@ -2,8 +2,8 @@ import psycopg2 as psql
 
 # Schema of the table 'papers' in the PSQL database
 #
-#  id | title | abstract | publish_date | categories | authors | doi | arxiv_id
-# ----+-------+----------+--------------+------------+---------+-----+----------
+#  id | title | abstract | publish_date | categories | authorsn | arxiv_id | upvotes
+# ----+-------+----------+--------------+------------+----------+----------+--------
 
 
 def convert_user_to_dict(user_data):
@@ -158,3 +158,43 @@ class PSQL:
 		else:
 			return None
 
+
+	def check_user_paper(self, user_id, paper_id):
+		self.cursor.execute(
+			"SELECT status \
+			FROM user_papers \
+			WHERE user_id = %s \
+			AND paper_id = %s",
+			[user_id, paper_id]
+			)
+		status = self.cursor.fetchone()
+		self.conn.commit()
+
+		return status
+
+
+	def set_user_paper(self, user_id, paper_id, status):
+		self.cursor.execute(
+			"INSERT INTO user_papers \
+			(user_id, paper_id, status) VALUES (%s, %s, %s) \
+        	ON CONFLICT (user_id, paper_id) \
+        	DO UPDATE SET status = %s",
+        	[user_id, paper_id, status, status]
+			)
+		self.conn.commit()
+
+		return status
+
+
+	def get_user_papers(self, user_id):
+		self.cursor.execute(
+			"SELECT p.id, p.title, p.abstract, p.publish_date, \
+			p.categories, p.authors, p.arxiv_id, p.upvotes, up.status \
+			FROM papers p \
+			JOIN user_papers up ON p.id = up.paper_id \
+			WHERE up.user_id = %s",
+			(user_id,)
+			)
+		papers = self.cursor.fetchall()
+
+		return papers

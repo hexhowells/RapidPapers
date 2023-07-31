@@ -2,6 +2,7 @@ import search
 import faiss
 import config
 from psql import PSQL
+import utils
 
 import pickle
 from datetime import datetime
@@ -265,6 +266,42 @@ def create_app():
 			return make_response(jsonify({"user_vote": upvote_status[0]}), 200)
 
 
+	@app.route('/addpaper', methods=['POST'])
+	@jwt_required()
+	def add_user_paper():
+		user_id = get_jwt_identity()
+		if not user_id:
+			abort(401)
+
+		paper_id = request.json['paper_id']
+		if not paper_id: return make_response('Paper ID not found', 401)
+
+		if 'status' not in request.json: return make_response('Status not found', 401)
+		status = request.json['status']
+
+		paper_status = psql.check_user_paper(user_id, paper_id)
+
+		psql.set_user_paper(user_id, paper_id, status)
+		return make_response(jsonify({"user_paper_status": status}), 200)
+
+
+	@app.route('/getuserpapers', methods=['GET'])
+	@jwt_required()
+	def get_user_papers():
+		user_id = get_jwt_identity()
+		if not user_id:
+			abort(401)
+
+		_papers = psql.get_user_papers(user_id)
+		papers = []
+		for p in _papers:
+			paper = utils.paper_to_dict(p)
+			paper['status'] = p[8]
+			papers.append(paper)
+
+		return {'results': papers, 'num_results': len(papers)}
+
+
 	@app.route('/logout', methods=['POST'])
 	def logout():
 		response = make_response(redirect('/'), 200)
@@ -279,7 +316,7 @@ def create_app():
 
 		results_per_page = request.args.get('num_results')
 		results_per_page = results_per_page if (
-			results_per_page != None) else 50
+			results_per_page != None) else 25
 
 		sort_type = request.args.get('sort')
 		sort_type = sort_type if (sort_type != None) else 'relevant'

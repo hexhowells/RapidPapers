@@ -43,6 +43,11 @@ const Header = () => {
                             </li>
                             {isAuthenticated && 
                                 <li className="nav-item pe-2">
+                                    <Link className="nav-link link-light" to="/library">Library</Link>
+                                </li>
+                            }
+                            {isAuthenticated && 
+                                <li className="nav-item pe-2">
                                     <Link className="nav-link link-light" to="/account">Account</Link>
                                 </li>
                             }
