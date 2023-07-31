@@ -1,19 +1,7 @@
 import numpy as np
 from sentence_transformers import SentenceTransformer
 from psql import PSQL
-
-
-def paper_to_dict(paper):
-	return {
-			'id': paper[0],
-			'title': paper[1],
-			'abstract': paper[2],
-			'date': paper[3].strftime("%a, %d %b %Y"),
-			'categories': paper[4],
-			'authors': paper[5],
-			'arxiv_id': paper[6],
-			'upvotes': paper[7]
-			}
+import utils
 
 
 def faiss_search(index, query, threshold=0.7):
@@ -36,14 +24,14 @@ def search_paper(results):
 	
 	papers_dict = []
 	for paper in papers:
-		papers_dict.append(paper_to_dict(paper))
+		papers_dict.append(utils.paper_to_dict(paper))
 
 	return papers_dict
 
 
 def fetch_paper(paper_id):
 	database = PSQL()
-	return paper_to_dict( database.fetch_paper(paper_id)[0] )
+	return utils.paper_to_dict( database.fetch_paper(paper_id)[0] )
 
 
 def get_most_recent(num_results, page_num):
@@ -53,6 +41,6 @@ def get_most_recent(num_results, page_num):
 	
 	papers_dict = []
 	for paper in papers:
-		papers_dict.append(paper_to_dict(paper))
+		papers_dict.append(utils.paper_to_dict(paper))
 
 	return papers_dict
