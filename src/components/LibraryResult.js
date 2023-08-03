@@ -39,19 +39,19 @@ const LibraryResult = (props) => {
 								    : "Anonymous"}
 								</i>*/}
 
-								<p className="small-text date">{item.date}</p>
+								<p className="small-text date mb-1">{item.date}</p>
 
 								{/*<p>{item.abstract?.slice(0, 400)}...</p>*/}
 								{item.status !== 'to read' && (
-									<a className="pe-2" onClick={() => bookmark('to read')}>Mark as to Read</a>
+									<a className="small-text pe-2" onClick={() => bookmark('to read')}>Mark as to Read</a>
 								)}
 								{item.status !== 'read' && (
-									<a className="pe-2" onClick={() => bookmark('read')}>Mark as Read</a>
+									<a className="small-text pe-2" onClick={() => bookmark('read')}>Mark as Read</a>
 								)}
 								{item.status !== 'currently reading' && (
-									<a className="pe-2" onClick={() => bookmark('currently reading')}>Mark as Reading</a>
+									<a className="small-text pe-2" onClick={() => bookmark('currently reading')}>Mark as Reading</a>
 								)}
-								<a className="pe-2" onClick={removeBookmark}>Remove</a>
+								<a className="small-text pe-2" onClick={removeBookmark}>Remove</a>
 							</div>
 						</div>
 					</div>
