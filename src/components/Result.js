@@ -1,6 +1,6 @@
 import {Link} from "react-router-dom";
 import { useState, useEffect } from 'react';
-import { BsFillCaretUpFill, BsFillCaretDownFill, BsFillBookmarkFill } from "react-icons/bs";
+import { BsFillCaretUpFill, BsFillCaretDownFill, BsFillBookmarkFill, BsFillBookmarkCheckFill } from "react-icons/bs";
 import axios from 'axios';
 import './Result.css'
 
@@ -10,11 +10,23 @@ const Result = (props) => {
 
 	const [upvotes, setUpvotes] = useState(item.upvotes);
 	const [userVote, setUserVote] = useState(null);
+	const [isBookmarked, setIsBookmarked] = useState(false);
 
 	useEffect(() => {
 		setUpvotes(item.upvotes);
 		fetchUserVote(item.id);
+		fetchBookmarkStatus(item.id);
 	}, [item]);
+
+
+	const fetchBookmarkStatus = async (id) => {
+	    try {
+	        const res = await axios.get(`/isbookmarked?paper_id=${item.id}`);
+	        setIsBookmarked(res.data.is_bookmarked);
+	    } catch (error) {
+	        console.error(error);
+	    }
+	};
 
 
 	const fetchUserVote = async (id) => {
@@ -49,6 +61,7 @@ const Result = (props) => {
     const bookmark = async () => {
         try {
             await axios.post('/addpaper', { paper_id: item.id, status: 'to read'});
+            setIsBookmarked(!isBookmarked);
         } catch (error) {
             console.error(error);
         }
@@ -67,8 +80,11 @@ const Result = (props) => {
 		                <button onClick={downvote} className={`btn m-auto btn-square ${userVote === 'down' ? 'btn-danger' : 'btn-primary'}`}>
 		                    <BsFillCaretDownFill size={15}/>
 		                </button>
-		                <button onClick={bookmark} className="btn btn-primary m-auto mt-4 btn-square">
-		                    <BsFillBookmarkFill size={15}/>
+		                <button onClick={bookmark} className={`btn m-auto mt-4 btn-square ${isBookmarked ? 'btn-success' : 'btn-primary'}`}>
+		                    {isBookmarked ? 
+						        <BsFillBookmarkCheckFill size={15}/> : 
+						        <BsFillBookmarkFill size={15} />
+						    }
 		                </button>
 					</div>
 					<div className="col-md-11">

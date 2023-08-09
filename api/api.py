@@ -316,6 +316,21 @@ def create_app():
 		return {'results': papers, 'num_results': len(papers)}
 
 
+	@app.route('/isbookmarked', methods=['GET'])
+	@jwt_required()
+	def check_user_paper():
+		user_id = get_jwt_identity()
+		if not user_id:
+			abort(401)
+
+		paper_id = request.args.get('paper_id')
+		if not paper_id: return make_response('Paper ID not found', 401)
+
+		bookmark_exists = psql.check_user_paper_exists(user_id, paper_id)
+
+		return {'is_bookmarked': bookmark_exists}
+
+
 	@app.route('/logout', methods=['POST'])
 	def logout():
 		response = make_response(redirect('/'), 200)

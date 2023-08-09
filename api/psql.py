@@ -208,3 +208,14 @@ class PSQL:
 		papers = self.cursor.fetchall()
 
 		return papers
+
+
+	def check_user_paper_exists(self, user_id, paper_id):
+		self.cursor.execute(
+			"SELECT EXISTS(SELECT 1 FROM user_papers \
+			WHERE user_id = %s AND paper_id = %s)",
+			(user_id, paper_id)
+			)
+		result = self.cursor.fetchone()
+		
+		return result[0] if result else False
