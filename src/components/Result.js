@@ -77,7 +77,6 @@ const Result = (props) => {
 							<Link className="nav-link paper-title" to={`/paper/${item.id}`} key={item.id}>
 								<h5>{item.title}</h5>
 							</Link>
-								{/*<a className={item.authors ? "nav-link" : "nav-link disabled"} href="/"></a>*/}
 								<i className="small-text">
 								  {item.authors
 								    ? item.authors.map((author) => author.replace(/\\/g, '')).join(", ")
