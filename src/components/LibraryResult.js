@@ -9,6 +9,7 @@ const LibraryResult = (props) => {
     const bookmark = async (status) => {
         try {
             await axios.post('/addpaper', { paper_id: item.id, status: status});
+            props.onStatusChange();
         } catch (error) {
             console.error(error);
         }
@@ -17,6 +18,7 @@ const LibraryResult = (props) => {
     const removeBookmark = async () => {
         try {
             await axios.post('/removepaper', { paper_id: item.id });
+            props.onStatusChange();
         } catch (error) {
             console.error(error);
         }
@@ -33,15 +35,7 @@ const LibraryResult = (props) => {
 							<Link className="nav-link paper-title" to={`/paper/${item.id}`} key={item.id}>
 								<h6 className="mb-1">{item.title}</h6>
 							</Link>
-								{/*<i className="small-text">
-								  {item.authors
-								    ? item.authors.map((author) => author.replace(/\\/g, '')).join(", ")
-								    : "Anonymous"}
-								</i>*/}
-
 								<p className="small-text date mb-1">{item.date}</p>
-
-								{/*<p>{item.abstract?.slice(0, 400)}...</p>*/}
 								{item.status !== 'to read' && (
 									<a className="small-text pe-2" onClick={() => bookmark('to read')}>Mark as to Read</a>
 								)}

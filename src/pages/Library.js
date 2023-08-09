@@ -4,6 +4,7 @@ import LibraryResult from "./../components/LibraryResult"
 
 const Library = () => {
     const [data, setData] = useState({toRead: [], reading: [], read: []});
+    const [statusChange, setStatusChange] = useState(false);
 
     useEffect(() => {
         fetch('/getuserpapers')
@@ -14,7 +15,7 @@ const Library = () => {
                 const read = data['results'].filter(paper => paper.status === 'read');
                 setData({toRead, reading, read});
             });
-    }, []);
+    }, [statusChange]);
 
     return (
         <div>
@@ -27,7 +28,11 @@ const Library = () => {
                     </div>
                     <ul>
                         {data.toRead.map((paper, index) => (
-                            <LibraryResult key={index} item={paper}></LibraryResult>
+                            <LibraryResult 
+                                key={index} 
+                                item={paper} 
+                                onStatusChange={() => setStatusChange(prevState => !prevState)}>
+                            </LibraryResult>
                         ))}
                     </ul>
                 </Tab>
@@ -38,7 +43,11 @@ const Library = () => {
                     </div>
                     <ul>
                         {data.reading.map((paper, index) => (
-                            <LibraryResult key={index} item={paper}></LibraryResult>
+                            <LibraryResult 
+                                key={index} 
+                                item={paper} 
+                                onStatusChange={() => setStatusChange(prevState => !prevState)}>
+                            </LibraryResult>
                         ))}
                     </ul>
                 </Tab>
@@ -49,7 +58,11 @@ const Library = () => {
                     </div>
                     <ul>
                         {data.read.map((paper, index) => (
-                            <LibraryResult key={index} item={paper}></LibraryResult>
+                            <LibraryResult 
+                                key={index} 
+                                item={paper} 
+                                onStatusChange={() => setStatusChange(prevState => !prevState)}>
+                            </LibraryResult>
                         ))}
                     </ul>
                 </Tab>
