@@ -14,8 +14,10 @@ const Result = (props) => {
 
 	useEffect(() => {
 		setUpvotes(item.upvotes);
-		fetchUserVote(item.id);
-		fetchBookmarkStatus(item.id);
+		//fetchUserVote(item.id);
+		setUserVote(item.upvote_status);
+		//fetchBookmarkStatus(item.id);
+		setIsBookmarked(item.library_status);
 	}, [item]);
 
 
