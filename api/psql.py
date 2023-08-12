@@ -217,5 +217,44 @@ class PSQL:
 			(user_id, paper_id)
 			)
 		result = self.cursor.fetchone()
-		
+
 		return result[0] if result else False
+
+
+	def fetch_paper_details(self, user_id, paper_id):
+		self.cursor.execute("""
+			SELECT 
+				papers.*, 
+				user_votes.vote AS user_vote,
+				user_papers.status AS user_paper_status
+			FROM papers
+			LEFT JOIN user_votes ON papers.id = user_votes.paper_id AND user_votes.user_id = %s
+			LEFT JOIN user_papers ON papers.id = user_papers.paper_id AND user_papers.user_id = %s
+			WHERE papers.id = %s
+		""", [user_id, user_id, paper_id])
+
+		result = self.cursor.fetchone()
+		self.conn.commit()
+
+		return result
+
+
+	def fetch_all_details(self, user_id, num_results, page):
+		self.cursor.execute("""
+			SELECT 
+				papers.*,
+				user_votes.vote AS user_vote,
+				user_papers.status AS user_paper_status
+			FROM papers
+			LEFT JOIN user_votes ON papers.id = user_votes.paper_id AND user_votes.user_id = %s
+			LEFT JOIN user_papers ON papers.id = user_papers.paper_id AND user_papers.user_id = %s
+			ORDER BY papers.publish_date DESC
+			LIMIT %s
+			OFFSET %s
+		""", [user_id, user_id, num_results, ((page - 1) * num_results)])
+
+		results = self.cursor.fetchall()
+		self.conn.commit()
+
+		return results
+		
