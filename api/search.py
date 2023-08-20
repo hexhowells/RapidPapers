@@ -16,11 +16,13 @@ def faiss_search(index, query, threshold=0.7):
 	return indicies
 
 
-def search_paper(results):
+def search_paper(user_id, results):
 	database = PSQL()
 
-	#papers = [(database.fetch(str(result))[0], d) for result, d in zip(results, dists)]
-	papers = [database.fetch_paper(str(result))[0] for result in results]
+	if user_id:
+		papers = [database.fetch_paper_details(user_id, str(result)) for result in results]
+	else:
+		papers = [database.fetch_paper(str(result))[0] for result in results]
 	
 	papers_dict = []
 	for paper in papers:
@@ -29,15 +31,21 @@ def search_paper(results):
 	return papers_dict
 
 
-def fetch_paper(paper_id):
+def fetch_paper(user_id, paper_id):
 	database = PSQL()
-	return utils.paper_to_dict( database.fetch_paper(paper_id)[0] )
+	if user_id:
+		return utils.paper_to_dict( database.fetch_paper_details(user_id, paper_id) )
+	else:
+		return utils.paper_to_dict( database.fetch_paper(paper_id)[0] )
 
 
-def get_most_recent(num_results, page_num):
+def get_most_recent(user_id, num_results, page_num):
 	database = PSQL()
 
-	papers = database.fetch_all(num_results, page_num)
+	if user_id:
+		papers = database.fetch_all_details(user_id, num_results, page_num)
+	else:
+		papers = database.fetch_all(num_results, page_num)
 	
 	papers_dict = []
 	for paper in papers:

@@ -14,20 +14,9 @@ const Result = (props) => {
 
 	useEffect(() => {
 		setUpvotes(item.upvotes);
-		fetchUserVote(item.id);
-		fetchBookmarkStatus(item.id);
+		setUserVote(item.upvote_status);
+		setIsBookmarked(item.library_status);
 	}, [item]);
-
-
-	const fetchBookmarkStatus = async (id) => {
-	    try {
-	        const res = await axios.get(`/isbookmarked?paper_id=${item.id}`);
-	        setIsBookmarked(res.data.is_bookmarked);
-	    } catch (error) {
-	        console.error(error);
-	    }
-	};
-
 
 	const fetchUserVote = async (id) => {
         try {

@@ -28,7 +28,7 @@ from flask_jwt_extended import (
 	get_jwt, 
 	get_jwt_identity, 
 	unset_jwt_cookies, 
-	jwt_required, 
+	jwt_required,
 	JWTManager
 )
 
@@ -340,7 +340,9 @@ def create_app():
 
 
 	@app.route('/api/v1/search')
+	@jwt_required(optional=True)
 	def search_papers():
+		user_id = get_jwt_identity()
 		query = request.args.get('query')
 
 		results_per_page = request.args.get('num_results')
@@ -357,19 +359,21 @@ def create_app():
 			page_index = results_per_page * page_num
 			faiss_ids = search.faiss_search(faiss_index, query, threshold=1.2)
 
-			results = search.search_paper(faiss_ids)
+			results = search.search_paper(user_id, faiss_ids)
 			results = sort_papers(results, sort_type)
 			num_found = len(results)
 			results = results[page_index-results_per_page: page_index]
 		else:
 			num_found = results_per_page * 100
-			results = search.get_most_recent(results_per_page, page_num)
+			results = search.get_most_recent(user_id, results_per_page, page_num)
 
 		return {'results': results, 'num_results': num_found}
 
 
 	@app.route('/api/v1/similar')
+	@jwt_required(optional=True)
 	def search_similar():
+		user_id = get_jwt_identity()
 		paper_id = request.args.get('id')
 
 		results_per_page = request.args.get('num_results')
@@ -382,12 +386,12 @@ def create_app():
 		page_num = request.args.get('page')
 		page_num = int(page_num) if (page_num != None) else 1
 
-		paper = search.fetch_paper(paper_id)
+		paper = search.fetch_paper(user_id, paper_id)
 
 		page_index = results_per_page * page_num
 		faiss_ids = search.faiss_search(faiss_index, paper['abstract'])
 
-		results = search.search_paper(faiss_ids)
+		results = search.search_paper(user_id, faiss_ids)
 		results = sort_papers(results, sort_type)
 		num_found = len(results)
 		results = results[page_index-results_per_page: page_index]
@@ -399,7 +403,7 @@ def create_app():
 	def get_paper():
 		paper_id = request.args.get('id')
 
-		return search.fetch_paper(paper_id)
+		return search.fetch_paper(None, paper_id)
 
 	return app
 
