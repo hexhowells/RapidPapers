@@ -5,9 +5,7 @@ import axios from 'axios';
 import './Result.css'
 
 
-const Result = (props) => {
-	const {item} = props;
-
+const Result = ({item, isAuthenticated}) => {
 	const [upvotes, setUpvotes] = useState(item.upvotes);
 	const [userVote, setUserVote] = useState(null);
 	const [isBookmarked, setIsBookmarked] = useState(false);
@@ -17,6 +15,7 @@ const Result = (props) => {
 		setUserVote(item.upvote_status);
 		setIsBookmarked(item.library_status);
 	}, [item]);
+	console.log(isAuthenticated);
 
 	const fetchUserVote = async (id) => {
         try {
@@ -61,6 +60,7 @@ const Result = (props) => {
 		<li className="list-group-item pt-4 pb-4 mb-3 rounded" key={item.title}>
 			<div className="container-fluid">
 				<div className="row">
+				{isAuthenticated &&
 					<div className="col-md-1">
 						<button onClick={upvote} className={`btn  m-auto btn-square ${userVote === 'up' ? 'btn-success' : 'btn-primary'}`}>
 		                    <BsFillCaretUpFill size={15}/>
@@ -76,6 +76,7 @@ const Result = (props) => {
 						    }
 		                </button>
 					</div>
+				}
 					<div className="col-md-11">
 						<div className="row">
 							<div className="col-md-12 result-container">
