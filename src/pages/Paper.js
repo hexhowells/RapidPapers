@@ -11,20 +11,21 @@ const Paper = () => {
 	const { id } = useParams();
 	const [paper, setPaper] = useState(0);
 
+	const [upvotes, setUpvotes] = useState(0); 
+	const [userVote, setUserVote] = useState(null); 
+	const [isBookmarked, setIsBookmarked] = useState(false); 
+
 	useEffect(() => {
       fetch(`/api/v1/paper?id=${id}`)
         .then((res) => res.json())
         .then((data) => {
           setPaper(data);
+          setUpvotes(data.upvotes);
         })
         .catch((error) => {
           console.error('Error fetching data from backend:', error);
         });
     }, [id]);
-
-	const [upvotes, setUpvotes] = useState(0); 
-	const [userVote, setUserVote] = useState(null); 
-	const [isBookmarked, setIsBookmarked] = useState(false); 
 
 	useEffect(() => {
 	    const fetchInitialData = async () => {
@@ -88,7 +89,7 @@ const Paper = () => {
 				<button className="btn btn-info mt-3">Find Similar</button>
 			</Link>
 
-			<div className="d-flex align-items-center pt-4 m-0">
+			<div className="d-flex align-items-center pt-5 m-0">
 			    <button onClick={handleUpvote} className={`btn me-2 btn-square ${userVote === 'up' ? 'btn-success' : 'btn-primary'}`}>
 			        <BsFillCaretUpFill size={15}/>
 			    </button>
