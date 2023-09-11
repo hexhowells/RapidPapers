@@ -1,6 +1,10 @@
 import { useParams, Link } from "react-router-dom";
 import React, { useState, useEffect } from 'react';
 
+import { upvote, downvote, fetchUserVote } from '../utilities/votingUtils';
+import { bookmark } from '../utilities/bookmarkUtils';
+import { BsFillCaretUpFill, BsFillCaretDownFill, BsFillBookmarkFill, BsFillBookmarkCheckFill } from "react-icons/bs";
+
 import './Paper.css';
 
 const Paper = () => {
@@ -17,6 +21,39 @@ const Paper = () => {
           console.error('Error fetching data from backend:', error);
         });
     }, [id]);
+
+	const [upvotes, setUpvotes] = useState(0); 
+	const [userVote, setUserVote] = useState(null); 
+	const [isBookmarked, setIsBookmarked] = useState(false); 
+
+	useEffect(() => {
+	    const fetchInitialData = async () => {
+	        const userVoteData = await fetchUserVote(id);
+	        setUserVote(userVoteData);
+	        // You might need to fetch initial upvote count and bookmark status too.
+	    };
+
+	    fetchInitialData();
+	}, [id]);
+
+	const handleUpvote = async () => {
+	    const data = await upvote(id);
+	    setUpvotes(data.upvotes);
+	    const userVoteData = await fetchUserVote(id);
+	    setUserVote(userVoteData);
+	};
+
+	const handleDownvote = async () => {
+	    const data = await downvote(id);
+	    setUpvotes(data.upvotes);
+	    const userVoteData = await fetchUserVote(id);
+	    setUserVote(userVoteData);
+	};
+
+	const handleBookmark = async () => {
+	    await bookmark(id);
+	    setIsBookmarked(!isBookmarked);
+	};
 
 	return (
 		<>
@@ -50,6 +87,23 @@ const Paper = () => {
 			<Link to={`/similar/${paper.id}`} key={paper.id}>
 				<button className="btn btn-info mt-3">Find Similar</button>
 			</Link>
+
+			<div className="d-flex align-items-center pt-4 m-0">
+			    <button onClick={handleUpvote} className={`btn me-2 btn-square ${userVote === 'up' ? 'btn-success' : 'btn-primary'}`}>
+			        <BsFillCaretUpFill size={15}/>
+			    </button>
+			    <p className="my-1 mx-2">{upvotes}</p>
+			    <button onClick={handleDownvote} className={`btn mx-2 btn-square ${userVote === 'down' ? 'btn-danger' : 'btn-primary'}`}>
+			        <BsFillCaretDownFill size={15}/>
+			    </button>
+			    <button onClick={handleBookmark} className={`btn mx-2 btn-square ${isBookmarked ? 'btn-success' : 'btn-primary'}`}>
+			        {isBookmarked ? 
+			            <BsFillBookmarkCheckFill size={15}/> : 
+			            <BsFillBookmarkFill size={15} />
+			        }
+			    </button>
+			</div>
+
 		</div>
 		</>
 		);
