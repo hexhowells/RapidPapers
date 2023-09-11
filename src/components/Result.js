@@ -1,7 +1,8 @@
 import {Link} from "react-router-dom";
 import { useState, useEffect } from 'react';
 import { BsFillCaretUpFill, BsFillCaretDownFill, BsFillBookmarkFill, BsFillBookmarkCheckFill } from "react-icons/bs";
-import axios from 'axios';
+import { upvote, downvote, fetchUserVote } from '../utilities/votingUtils';
+import { bookmark } from '../utilities/bookmarkUtils';
 import './Result.css'
 
 
@@ -15,44 +16,25 @@ const Result = ({item, isAuthenticated}) => {
 		setUserVote(item.upvote_status);
 		setIsBookmarked(item.library_status);
 	}, [item]);
-	console.log(isAuthenticated);
 
-	const fetchUserVote = async (id) => {
-        try {
-            const res = await axios.get(`/uservote?paper_id=${item.id}`);
-            setUserVote(res.data.user_vote);  // Update based on server response
-        } catch (error) {
-            console.error(error);
-        }
+
+    const handleUpvote = async () => {
+        const data = await upvote(item.id);
+        setUpvotes(data.upvotes);
+        const userVoteData = await fetchUserVote(item.id);
+        setUserVote(userVoteData);
     };
 
-	const upvote = async () => {
-        try {
-            const res = await axios.post('/upvote', { paper_id: item.id });
-            setUpvotes(res.data.upvotes);
-            fetchUserVote(item.id);
-        } catch (error) {
-            console.error(error);
-        }
+    const handleDownvote = async () => {
+        const data = await downvote(item.id);
+        setUpvotes(data.upvotes);
+        const userVoteData = await fetchUserVote(item.id);
+        setUserVote(userVoteData);
     };
 
-    const downvote = async () => {
-        try {
-            const res = await axios.post('/downvote', { paper_id: item.id });
-            setUpvotes(res.data.upvotes);
-            fetchUserVote(item.id);
-        } catch (error) {
-            console.error(error);
-        }
-    };
-
-    const bookmark = async () => {
-        try {
-            await axios.post('/addpaper', { paper_id: item.id, status: 'to read'});
-            setIsBookmarked(!isBookmarked);
-        } catch (error) {
-            console.error(error);
-        }
+    const handleBookmark = async () => {
+        await bookmark(item.id);
+        setIsBookmarked(!isBookmarked);
     };
 
 	return (
@@ -62,14 +44,14 @@ const Result = ({item, isAuthenticated}) => {
 				<div className="row">
 				{isAuthenticated &&
 					<div className="col-md-1">
-						<button onClick={upvote} className={`btn  m-auto btn-square ${userVote === 'up' ? 'btn-success' : 'btn-primary'}`}>
+						<button onClick={handleUpvote} className={`btn  m-auto btn-square ${userVote === 'up' ? 'btn-success' : 'btn-primary'}`}>
 		                    <BsFillCaretUpFill size={15}/>
 		                </button>
 		                <p className="text-center my-1">{upvotes}</p>
-		                <button onClick={downvote} className={`btn m-auto btn-square ${userVote === 'down' ? 'btn-danger' : 'btn-primary'}`}>
+		                <button onClick={handleDownvote} className={`btn m-auto btn-square ${userVote === 'down' ? 'btn-danger' : 'btn-primary'}`}>
 		                    <BsFillCaretDownFill size={15}/>
 		                </button>
-		                <button onClick={bookmark} className={`btn m-auto mt-4 btn-square ${isBookmarked ? 'btn-success' : 'btn-primary'}`}>
+		                <button onClick={handleBookmark} className={`btn m-auto mt-4 btn-square ${isBookmarked ? 'btn-success' : 'btn-primary'}`}>
 		                    {isBookmarked ? 
 						        <BsFillBookmarkCheckFill size={15}/> : 
 						        <BsFillBookmarkFill size={15} />
