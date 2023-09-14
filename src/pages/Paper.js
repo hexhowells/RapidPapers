@@ -21,6 +21,7 @@ const Paper = () => {
         .then((data) => {
           setPaper(data);
           setUpvotes(data.upvotes);
+          setIsBookmarked(data.library_status);
         })
         .catch((error) => {
           console.error('Error fetching data from backend:', error);
@@ -52,7 +53,7 @@ const Paper = () => {
 	};
 
 	const handleBookmark = async () => {
-	    await bookmark(id);
+	    await bookmark(id, isBookmarked);
 	    setIsBookmarked(!isBookmarked);
 	};
 
@@ -86,24 +87,12 @@ const Paper = () => {
 				Read Paper
 			</a>
 			<Link to={`/similar/${paper.id}`} key={paper.id}>
-				<button className="btn btn-info mt-3">Find Similar</button>
+				<button className="btn btn-info mt-3 me-2">Find Similar</button>
 			</Link>
 
-			<div className="d-flex align-items-center pt-5 m-0">
-			    <button onClick={handleUpvote} className={`btn me-2 btn-square ${userVote === 'up' ? 'btn-success' : 'btn-primary'}`}>
-			        <BsFillCaretUpFill size={15}/>
-			    </button>
-			    <p className="my-1 mx-2">{upvotes}</p>
-			    <button onClick={handleDownvote} className={`btn mx-2 btn-square ${userVote === 'down' ? 'btn-danger' : 'btn-primary'}`}>
-			        <BsFillCaretDownFill size={15}/>
-			    </button>
-			    <button onClick={handleBookmark} className={`btn mx-2 btn-square ${isBookmarked ? 'btn-success' : 'btn-primary'}`}>
-			        {isBookmarked ? 
-			            <BsFillBookmarkCheckFill size={15}/> : 
-			            <BsFillBookmarkFill size={15} />
-			        }
-			    </button>
-			</div>
+			<button onClick={handleBookmark} className={`btn mt-3 ${isBookmarked ? 'btn-success' : 'btn-primary'}`}>
+			    {isBookmarked ? "remove from library" : "add to library"}
+			</button>
 
 		</div>
 		</>

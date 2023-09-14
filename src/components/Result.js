@@ -33,7 +33,7 @@ const Result = ({item, isAuthenticated}) => {
     };
 
     const handleBookmark = async () => {
-        await bookmark(item.id);
+        await bookmark(item.id, isBookmarked);
         setIsBookmarked(!isBookmarked);
     };
 

@@ -400,10 +400,12 @@ def create_app():
 
 
 	@app.route('/api/v1/paper')
+	@jwt_required(optional=True)
 	def get_paper():
+		user_id = get_jwt_identity()
 		paper_id = request.args.get('id')
 
-		return search.fetch_paper(None, paper_id)
+		return search.fetch_paper(user_id, paper_id)
 
 	return app
 
