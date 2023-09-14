@@ -90,8 +90,8 @@ const Paper = () => {
 				<button className="btn btn-info mt-3 me-2">Find Similar</button>
 			</Link>
 
-			<button onClick={handleBookmark} className={`btn mt-3 ${isBookmarked ? 'btn-success' : 'btn-primary'}`}>
-			    {isBookmarked ? "remove from library" : "add to library"}
+			<button onClick={handleBookmark} className={`btn mt-3 ${isBookmarked ? 'btn-danger' : 'btn-primary'}`}>
+			    {isBookmarked ? "Remove from Library" : "Add to Library"}
 			</button>
 
 		</div>
