@@ -1,18 +1,13 @@
 import { useParams, Link } from "react-router-dom";
 import React, { useState, useEffect } from 'react';
 
-import { upvote, downvote, fetchUserVote } from '../utilities/votingUtils';
 import { bookmark } from '../utilities/bookmarkUtils';
-import { BsFillCaretUpFill, BsFillCaretDownFill, BsFillBookmarkFill, BsFillBookmarkCheckFill } from "react-icons/bs";
 
 import './Paper.css';
 
 const Paper = () => {
 	const { id } = useParams();
 	const [paper, setPaper] = useState(0);
-
-	const [upvotes, setUpvotes] = useState(0); 
-	const [userVote, setUserVote] = useState(null); 
 	const [isBookmarked, setIsBookmarked] = useState(false); 
 
 	useEffect(() => {
@@ -20,7 +15,6 @@ const Paper = () => {
         .then((res) => res.json())
         .then((data) => {
           setPaper(data);
-          setUpvotes(data.upvotes);
           setIsBookmarked(data.library_status);
         })
         .catch((error) => {
@@ -28,29 +22,6 @@ const Paper = () => {
         });
     }, [id]);
 
-	useEffect(() => {
-	    const fetchInitialData = async () => {
-	        const userVoteData = await fetchUserVote(id);
-	        setUserVote(userVoteData);
-	        // You might need to fetch initial upvote count and bookmark status too.
-	    };
-
-	    fetchInitialData();
-	}, [id]);
-
-	const handleUpvote = async () => {
-	    const data = await upvote(id);
-	    setUpvotes(data.upvotes);
-	    const userVoteData = await fetchUserVote(id);
-	    setUserVote(userVoteData);
-	};
-
-	const handleDownvote = async () => {
-	    const data = await downvote(id);
-	    setUpvotes(data.upvotes);
-	    const userVoteData = await fetchUserVote(id);
-	    setUserVote(userVoteData);
-	};
 
 	const handleBookmark = async () => {
 	    await bookmark(id, isBookmarked);
