@@ -11,7 +11,7 @@ const Paper = () => {
 	const [isBookmarked, setIsBookmarked] = useState(false); 
 
 	useEffect(() => {
-      fetch(`/api/v1/paper?id=${id}`)
+      fetch(`/api/v1/paper?id=${id.replace(/\./g, "")}`)
         .then((res) => res.json())
         .then((data) => {
           setPaper(data);
