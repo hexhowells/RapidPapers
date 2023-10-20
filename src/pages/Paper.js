@@ -24,7 +24,7 @@ const Paper = () => {
 
 
 	const handleBookmark = async () => {
-	    await bookmark(id, isBookmarked);
+	    await bookmark(id.replace(/\./g, ""), isBookmarked);
 	    setIsBookmarked(!isBookmarked);
 	};
 
