@@ -1,0 +1,11 @@
+
+/* Changes for mobile */
+@media screen and (max-width: 600px) {
+  .library-header {
+      padding: 0px !important;
+   }
+
+   .library-result {
+       padding: 0px !important;
+   }
+}

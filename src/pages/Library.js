@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Tab, Tabs } from 'react-bootstrap';
 import LibraryResult from "./../components/LibraryResult"
+import './Library.css';
 
 const Library = () => {
     const [data, setData] = useState({toRead: [], reading: [], read: []});
@@ -22,11 +23,11 @@ const Library = () => {
             <div className="container">
             <Tabs defaultActiveKey="toRead" id="reading-list-tabs">
                 <Tab eventKey="toRead" title="To Read">
-                    <div className="ps-4">
+                    <div className="library-header ps-2">
                         <h4 className="pt-4">Papers to read</h4>
                         <p>{data.toRead.length} papers</p>
                     </div>
-                    <ul>
+                    <ul className="library-result">
                         {data.toRead.map((paper, index) => (
                             <LibraryResult 
                                 key={index} 
@@ -41,7 +42,7 @@ const Library = () => {
                         <h4 className="pt-4">Papers being read</h4>
                         <p>{data.reading.length} papers</p>
                     </div>
-                    <ul>
+                    <ul className="library-result">
                         {data.reading.map((paper, index) => (
                             <LibraryResult 
                                 key={index} 
@@ -56,7 +57,7 @@ const Library = () => {
                         <h4 className="pt-4">Papers previously read</h4>
                         <p>{data.read.length} papers</p>
                     </div>
-                    <ul>
+                    <ul className="library-result">
                         {data.read.map((paper, index) => (
                             <LibraryResult 
                                 key={index} 

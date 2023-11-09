@@ -6,6 +6,7 @@ import { useState, useEffect } from 'react';
 
 const Header = () => {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const [isNavCollapsed, setIsNavCollapsed] = useState(true);
 
     useEffect(() => {
         axios.get('/profile')
@@ -20,12 +21,17 @@ const Header = () => {
 
     const handleClickLogo = () => {
         if (window.location.pathname !== '/') {
-            // Navigate to the main page
             window.location.href = '/';
         } else {
-            // Refresh the current page
             window.location.reload();
         }
+    };
+
+    const handleNavCollapse = () => setIsNavCollapsed(!isNavCollapsed);
+
+    const handleNavLinkClick = () => {
+        // This will collapse the navbar when a link is clicked
+        setIsNavCollapsed(true);
     };
 
     return (
@@ -36,24 +42,27 @@ const Header = () => {
                         <img src={logo} alt="Logo" height="26" className="d-inline-block align-text-top me-1"></img>
                         <span className="ms-2 title">RapidPapers</span>
                     </Link>
-                    <div className="collapse navbar-collapse" id="navbarNav">
+                    <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded={!isNavCollapsed ? true : false} aria-label="Toggle navigation" onClick={handleNavCollapse}>
+                        <span className="navbar-toggler-icon"></span>
+                    </button>
+                    <div className={`${isNavCollapsed ? 'collapse' : ''} navbar-collapse`} id="navbarNav">
                         <ul className="navbar-nav ms-auto">
                             <li className="nav-item pe-2">
-                                <Link className="nav-link link-light" to="/about">About</Link>
+                                <Link className="nav-link link-light" to="/about" onClick={handleNavLinkClick}>About</Link>
                             </li>
                             {isAuthenticated && 
-                                <li className="nav-item pe-2">
-                                    <Link className="nav-link link-light" to="/library">Library</Link>
-                                </li>
-                            }
-                            {isAuthenticated && 
-                                <li className="nav-item pe-2">
-                                    <Link className="nav-link link-light" to="/account">Account</Link>
-                                </li>
+                                <>
+                                    <li className="nav-item pe-2">
+                                        <Link className="nav-link link-light" to="/library" onClick={handleNavLinkClick}>Library</Link>
+                                    </li>
+                                    <li className="nav-item pe-2">
+                                        <Link className="nav-link link-light" to="/account" onClick={handleNavLinkClick}>Account</Link>
+                                    </li>
+                                </>
                             }
                             {!isAuthenticated &&
                                 <li className="nav-item">
-                                    <Link className="nav-link link-light" to="/login">Login</Link>
+                                    <Link className="nav-link link-light" to="/login" onClick={handleNavLinkClick}>Login</Link>
                                 </li>
                             }
                         </ul>

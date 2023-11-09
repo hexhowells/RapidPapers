@@ -51,19 +51,21 @@ const Paper = () => {
 		      </div>
 		    </div>
 			<br></br>
-			<a className="btn btn-primary mt-3 me-2" 
-				href={`https://arxiv.org/abs/${paper.arxiv_id}`} 
-				target="_blank" rel="noopener noreferrer" 
-				role="button">
-				Read Paper
-			</a>
-			<Link to={`/similar/${paper.id}`} key={paper.id}>
-				<button className="btn btn-info mt-3 me-2">Find Similar</button>
-			</Link>
+			<div className="action-buttons">
+				<a className="btn btn-primary mt-3 me-2" 
+					href={`https://arxiv.org/abs/${paper.arxiv_id}`} 
+					target="_blank" rel="noopener noreferrer" 
+					role="button">
+					Read Paper
+				</a>
+				<Link to={`/similar/${paper.id}`} key={paper.id}>
+					<button className="btn btn-info mt-3 me-2">Find Similar</button>
+				</Link>
 
-			<button onClick={handleBookmark} className={`btn mt-3 ${isBookmarked ? 'btn-danger' : 'btn-primary'}`}>
-			    {isBookmarked ? "Remove from Library" : "Add to Library"}
-			</button>
+				<button onClick={handleBookmark} className={`btn mt-3 ${isBookmarked ? 'btn-danger' : 'btn-primary'}`}>
+				    {isBookmarked ? "Remove from Library" : "Add to Library"}
+				</button>
+			</div>
 
 		</div>
 		</>

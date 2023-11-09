@@ -31,7 +31,7 @@ const LibraryResult = (props) => {
 				<div className="row">
 					<div className="col-md-12">
 						<div className="row">
-							<div className="col-md-12 result-container p-3 border-bottom">
+							<div className="col-md-12 result-container py-3 px-1 border-bottom">
 							<Link className="nav-link paper-title" to={`/paper/${item.id}`} key={item.id}>
 								<h6 className="mb-1">{item.title}</h6>
 							</Link>
