@@ -30,7 +30,7 @@ const Header = () => {
 
     return (
         <>
-            <nav className="navbar navbar-expand-md navbar-dark mb-4 py-2 header">
+            <nav className="navbar navbar-expand-md navbar-dark mb-4 py-3 header">
                 <div className="container">
                     <Link className="navbar-brand d-flex align-items-center" to="/" onClick={handleClickLogo}>
                         <img src={logo} alt="Logo" height="26" className="d-inline-block align-text-top me-1"></img>
