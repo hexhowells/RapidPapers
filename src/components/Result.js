@@ -42,29 +42,12 @@ const Result = ({item, isAuthenticated}) => {
 		<li className="list-group-item pt-4 pb-4 mb-3 rounded" key={item.title}>
 			<div className="container-fluid">
 				<div className="row">
-				{isAuthenticated &&
-					<div className="col-md-1">
-						<button onClick={handleUpvote} className={`btn  m-auto btn-square ${userVote === 'up' ? 'btn-success' : 'btn-primary'}`}>
-		                    <BsFillCaretUpFill size={15}/>
-		                </button>
-		                <p className="text-center my-1">{upvotes}</p>
-		                <button onClick={handleDownvote} className={`btn m-auto btn-square ${userVote === 'down' ? 'btn-danger' : 'btn-primary'}`}>
-		                    <BsFillCaretDownFill size={15}/>
-		                </button>
-		                <button onClick={handleBookmark} className={`btn m-auto mt-4 btn-square ${isBookmarked ? 'btn-success' : 'btn-primary'}`}>
-		                    {isBookmarked ? 
-						        <BsFillBookmarkCheckFill size={15}/> : 
-						        <BsFillBookmarkFill size={15} />
-						    }
-		                </button>
-					</div>
-				}
 					<div className="col-md-11">
 						<div className="row">
 							<div className="col-md-12 result-container">
-							<Link className="nav-link paper-title" to={`/paper/${item.id}`} key={item.id}>
-								<h5>{item.title}</h5>
-							</Link>
+								<Link className="nav-link paper-title" to={`/paper/${item.id}`} key={item.id}>
+									<h5>{item.title}</h5>
+								</Link>
 								<i className="small-text">
 								  {item.authors
 								    ? item.authors.map((author) => author.replace(/\\/g, '')).join(", ")
