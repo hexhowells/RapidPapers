@@ -16,6 +16,19 @@ def faiss_search(index, query, threshold=0.7):
 	return indicies
 
 
+def multi_faiss_search(index, queries, threshold=0.7):
+	model = SentenceTransformer('all-MiniLM-L6-v2')
+
+	embeddings = [model.encode([query]) for query in queries]
+	average_embedding = np.mean(embeddings, axis=0)
+
+	_, dists, result_indexes = index.range_search(average_embedding, thresh=threshold)
+
+	indicies = [x for _,x in sorted(zip(dists, result_indexes))]
+
+	return indicies
+
+
 def search_paper(user_id, results):
 	database = PSQL()
 

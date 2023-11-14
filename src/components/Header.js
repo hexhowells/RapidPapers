@@ -53,6 +53,9 @@ const Header = () => {
                             {isAuthenticated && 
                                 <>
                                     <li className="nav-item pe-2">
+                                        <Link className="nav-link link-light" to="/recommended" onClick={handleNavLinkClick}>Recommended</Link>
+                                    </li>
+                                    <li className="nav-item pe-2">
                                         <Link className="nav-link link-light" to="/library" onClick={handleNavLinkClick}>Library</Link>
                                     </li>
                                     <li className="nav-item pe-2">

@@ -399,6 +399,35 @@ def create_app():
 		return {'results': results, 'num_results': num_found}
 
 
+	@app.route('/api/v1/recommended')
+	@jwt_required(optional=True)
+	def get_recommended():
+		user_id = get_jwt_identity()
+
+		results_per_page = request.args.get('num_results')
+		results_per_page = results_per_page if (
+			results_per_page != None) else 50
+
+		sort_type = request.args.get('sort')
+		sort_type = sort_type if (sort_type != None) else 'relevant'
+
+		page_num = request.args.get('page')
+		page_num = int(page_num) if (page_num != None) else 1
+
+		papers = psql.get_user_papers(user_id)
+		paper_abstracts = [utils.paper_to_dict(paper)['abstract'] for paper in papers]
+
+		page_index = results_per_page * page_num
+		faiss_ids = search.multi_faiss_search(faiss_index, paper_abstracts)
+
+		results = search.search_paper(user_id, faiss_ids)
+		results = sort_papers(results, sort_type)
+		num_found = len(results)
+		results = results[page_index-results_per_page: page_index]
+
+		return {'results': results, 'num_results': num_found}
+
+
 	@app.route('/api/v1/paper')
 	@jwt_required(optional=True)
 	def get_paper():
