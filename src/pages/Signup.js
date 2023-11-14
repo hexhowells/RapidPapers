@@ -6,26 +6,35 @@ class SignupScreen extends React.Component {
         username: '',
         password: '',
         confirmPassword: '',
-        passwordMismatch: false
+        passwordMismatch: false,
+        passwordShort: false
     };
 
     handleInputChange = (e) => {
         const { name, value } = e.target;
-        
+
         this.setState({ [name]: value }, () => {
-            if (name === 'password' || name === 'confirmPassword') {
-                const passwordMismatch = this.state.password !== this.state.confirmPassword;
-                this.setState({ passwordMismatch });
+            if ((name === 'password' || name === 'confirmPassword') && this.state.password === this.state.confirmPassword) {
+                this.setState({ passwordMismatch: false });
             }
         });
+    };
+
+    handlePasswordBlur = () => {
+        const passwordShort = this.state.password.length < 8;
+        this.setState({ passwordShort });
+    };
+
+    handleConfirmPasswordBlur = () => {
+        const passwordMismatch = this.state.password !== this.state.confirmPassword;
+        this.setState({ passwordMismatch });
     };
 
 
     handleSubmit = (e) => {
         e.preventDefault();
-        if (this.state.password !== this.state.confirmPassword) {
-            this.setState({ passwordMismatch: true });
-            return;
+        if (this.state.passwordMismatch || this.state.passwordShort) {
+            return; // Stop the submission if there's a mismatch or the password is too short
         }
         // Handle signup logic here
         console.log('Email:', this.state.email, 'Username:', this.state.username, 'Password:', this.state.password);
@@ -66,13 +75,15 @@ class SignupScreen extends React.Component {
                                 <label htmlFor="password">Password</label>
                                 <input 
                                     type="password" 
-                                    className="form-control" 
+                                    className={`form-control ${this.state.passwordShort ? 'is-invalid' : ''}`} 
                                     id="password" 
                                     name="password" 
                                     value={this.state.password} 
                                     onChange={this.handleInputChange} 
+                                    onBlur={this.handlePasswordBlur}
                                     required
                                 />
+                                {this.state.passwordShort && <div className="invalid-feedback">Password must be at least 12 characters long.</div>}
                             </div>
                             <div className="form-group mb-3">
                                 <label htmlFor="confirmPassword">Confirm Password</label>
@@ -83,6 +94,7 @@ class SignupScreen extends React.Component {
                                     name="confirmPassword" 
                                     value={this.state.confirmPassword} 
                                     onChange={this.handleInputChange} 
+                                    onBlur={this.handleConfirmPasswordBlur}
                                     required
                                 />
                                 {this.state.passwordMismatch && <div className="invalid-feedback">Passwords do not match.</div>}
