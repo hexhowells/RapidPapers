@@ -13,8 +13,8 @@ const HeaderResults = ({setSortType, setPageNum, showDropdown=true, headerTitle=
 					    		setPageNum(1);
 					    	}}>
 					    	<option value="relevant">Most relevant</option>
-					    	<option value="desc">Descending</option>
-				            <option value="asc">Ascending</option>
+					    	<option value="desc">Newest</option>
+				            <option value="asc">Oldest</option>
 				        </select>
 					</div>
 				)}
