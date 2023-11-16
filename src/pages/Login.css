@@ -1,0 +1,10 @@
+.google-signin {
+	border: 1px solid black !important;
+	border-radius: 0px !important;
+}
+
+.google-signin:hover {
+	background-color: #2797f2 !important;
+	border-color: #2797f2 !important;
+	color: white !important;
+}
