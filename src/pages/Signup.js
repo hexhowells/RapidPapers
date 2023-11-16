@@ -14,8 +14,9 @@ class SignupScreen extends React.Component {
         const { name, value } = e.target;
 
         this.setState({ [name]: value }, () => {
-            if ((name === 'password' || name === 'confirmPassword') && this.state.password === this.state.confirmPassword) {
-                this.setState({ passwordMismatch: false });
+            if ((name === 'password' || name === 'confirmPassword')) {
+                const passwordMismatch = this.state.password !== this.state.confirmPassword;
+                this.setState({ passwordMismatch });
             }
         });
     };
@@ -23,11 +24,6 @@ class SignupScreen extends React.Component {
     handlePasswordBlur = () => {
         const passwordShort = this.state.password.length < 8;
         this.setState({ passwordShort });
-    };
-
-    handleConfirmPasswordBlur = () => {
-        const passwordMismatch = this.state.password !== this.state.confirmPassword;
-        this.setState({ passwordMismatch });
     };
 
 
@@ -94,7 +90,6 @@ class SignupScreen extends React.Component {
                                     name="confirmPassword" 
                                     value={this.state.confirmPassword} 
                                     onChange={this.handleInputChange} 
-                                    onBlur={this.handleConfirmPasswordBlur}
                                     required
                                 />
                                 {this.state.passwordMismatch && <div className="invalid-feedback">Passwords do not match.</div>}
