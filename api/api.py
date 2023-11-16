@@ -418,7 +418,7 @@ def create_app():
 		paper_abstracts = [utils.paper_to_dict(paper)['abstract'] for paper in papers]
 
 		page_index = results_per_page * page_num
-		faiss_ids = search.multi_faiss_search(faiss_index, paper_abstracts)
+		faiss_ids = search.multi_faiss_search(faiss_index, paper_abstracts, threshold=0.6)
 
 		results = search.search_paper(user_id, faiss_ids)
 		results = sort_papers(results, sort_type)
