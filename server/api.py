@@ -10,6 +10,7 @@ from datetime import datetime
 import secrets
 from urllib.parse import urlencode
 import requests
+from werkzeug.security import generate_password_hash
 
 from flask import (
 	Flask, 
@@ -96,6 +97,50 @@ def create_app():
 
 	jwt = JWTManager(app)
 	login_manager = LoginManager(app)
+
+
+	@app.route('/create_account', methods=['POST'])
+	def create_account():
+		username = request.json['username']
+		email = request.json['email']
+		password = request.json['password']
+
+		# Error checking
+		if not username:
+			return jsonify({'error:' 'missing username field'}), 400
+
+		if not email:
+			return jsonify({'error:' 'missing email field'}), 400
+
+		if not password:
+			return jsonify({'error:' 'missing password field'}), 400
+
+		if len(password) < 12:
+			return jsonify({'error:' 'password does not meet the security requirements (minimum of 12 characters)'}), 400
+
+		# Existing data checking
+		if psql.get_user_from_username(username):
+			return jsonify({'error': 'username already exists'}), 409
+
+		if psql.get_user_from_email(email):
+			return jsonify({'error:' 'email already registered to an account'}), 409
+
+		# Create new account
+		password_hash = generate_password_hash(password)
+
+		user_data = psql.create_user(username=username, email=email, password_hash=password_hash)
+		if not user_data: 
+			print("Error: Create new account not successful")
+			abort(401)
+		
+		user = User(id=user_data['id'], username=user_data['username'], email=user_data['email'])
+
+		access_token = create_access_token(identity=user.id, expires_delta=False)
+		res = make_response(redirect('http://127.0.0.1:9000/'))
+		res.set_cookie('access_token_cookie', access_token, secure=False, httponly=True, samesite='Lax', domain='127.0.0.1')
+
+		return res
+
 
 
 	@app.route('/authorise/<provider>')

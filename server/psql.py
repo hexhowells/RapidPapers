@@ -59,6 +59,18 @@ class PSQL:
 		return convert_user_to_dict(user_data)
 
 
+	def get_user_from_username(self, username):
+		self.cursor.execute(
+			"SELECT * \
+			FROM users \
+			WHERE username = %s",
+			[username]
+			)
+		user_data = self.cursor.fetchone()
+
+		return convert_user_to_dict(user_data)
+
+
 	def get_user(self, user_id):
 		self.cursor.execute(
 			"SELECT * \
@@ -71,13 +83,24 @@ class PSQL:
 		return convert_user_to_dict(user_data)
 
 
-	def create_user(self, username, email):
-		self.cursor.execute(
-			"INSERT INTO users (username, email) \
-			VALUES (%s, %s) \
-			RETURNING id, username, email",
-			[username, email]
-			)
+	def create_user(self, username, email, password_hash=None):
+		# Prepare the basic insert statement and values
+		insert_query = "INSERT INTO users (username, email"
+		values = [username, email]
+
+		# Add password_hash to the query and values if it's provided
+		if password_hash:
+		    insert_query += ", password_hash"
+		    values.append(password_hash)
+
+		# Finalize the query
+		insert_query += ") VALUES (%s, %s"
+		if password_hash:
+		    insert_query += ", %s"
+		insert_query += ") RETURNING id, username, email"
+
+		# Execute the query
+		self.cursor.execute(insert_query, values)
 		user_data = self.cursor.fetchone()
 		self.conn.commit()
 

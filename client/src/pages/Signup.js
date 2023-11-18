@@ -32,8 +32,26 @@ class SignupScreen extends React.Component {
         if (this.state.passwordMismatch || this.state.passwordShort) {
             return; // Stop the submission if there's a mismatch or the password is too short
         }
-        // Handle signup logic here
-        console.log('Email:', this.state.email, 'Username:', this.state.username, 'Password:', this.state.password);
+
+        // Setup the request options and body
+        const requestOptions = {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                email: this.state.email,
+                username: this.state.username,
+                password: this.state.password
+            })
+        };
+
+        // Send the request to the create_account route
+        fetch('/create_account', requestOptions)
+            .then(response => {
+                window.location.href = response.url;
+            })
+            .catch(error => {
+                console.error('Signup failed:', error);
+            });
     };
 
     render() {
