@@ -2,7 +2,7 @@ import psycopg2 as psql
 
 # Schema of the table 'papers' in the PSQL database
 #
-#  id | title | abstract | publish_date | categories | authorsn | arxiv_id | upvotes
+#  id | title | abstract | publish_date | categories | authors  | arxiv_id | upvotes
 # ----+-------+----------+--------------+------------+----------+----------+--------
 
 
