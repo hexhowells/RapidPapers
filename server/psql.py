@@ -6,14 +6,17 @@ import psycopg2 as psql
 # ----+-------+----------+--------------+------------+----------+----------+--------
 
 
-def convert_user_to_dict(user_data):
+def convert_user_to_dict(user_data, include_password=False):
 	if user_data:
-		return {
+		user_dict = {
 			'id': user_data[0], 
 			'username': user_data[1], 
 			'email': user_data[2], 
-			'password_hash': user_data[4]
 		}
+		if include_password:
+			user_dict['password_hash'] = user_data[4]
+
+		return user_dict
 	else:
 		return None
 		
@@ -61,7 +64,7 @@ class PSQL:
 			)
 		user_data = self.cursor.fetchone()
 
-		return convert_user_to_dict(user_data)
+		return convert_user_to_dict(user_data, include_password=True)
 
 
 	def get_user_from_username(self, username):
@@ -73,7 +76,7 @@ class PSQL:
 			)
 		user_data = self.cursor.fetchone()
 
-		return convert_user_to_dict(user_data)
+		return convert_user_to_dict(user_data, include_password=True)
 
 
 	def get_user(self, user_id):
@@ -85,7 +88,7 @@ class PSQL:
 			)
 		user_data = self.cursor.fetchone()
 
-		return convert_user_to_dict(user_data)
+		return convert_user_to_dict(user_data, include_password=True)
 
 
 	def create_user(self, username, email, password_hash=None):
