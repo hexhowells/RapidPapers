@@ -11,12 +11,9 @@ class LoginScreen extends React.Component {
     handleButtonClick = (provider) => {
         axios.get(`/authorise/${provider}`)
             .then(response => {
-                // handle successful response
-                // redirect user to new URL
                 window.location.href = response.data.redirect_url;
             })
             .catch(error => {
-                // handle error
                 console.log(error);
             });
     };
@@ -28,10 +25,30 @@ class LoginScreen extends React.Component {
     };
 
     handleSubmit = (e) => {
-        e.preventDefault();
-        // Handle login logic here
-        console.log('Email:', this.state.email, 'Password:', this.state.password);
+    e.preventDefault();
+    // Extract email and password from the state
+    const { email, password } = this.state;
+
+    // Setup the request options and body
+    const requestOptions = {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            user: email,
+            password: password
+        })
     };
+
+    // Send the login request to the server
+    fetch('/login', requestOptions)
+        .then(response => {
+            console.log(response)
+            window.location.href = response.url;
+        })
+        .catch(error => {
+            console.error('Login error:', error);
+        });
+};
 
     render() {
         return (

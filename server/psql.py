@@ -8,7 +8,12 @@ import psycopg2 as psql
 
 def convert_user_to_dict(user_data):
 	if user_data:
-		return {'id': user_data[0], 'username': user_data[1], 'email': user_data[2]}
+		return {
+			'id': user_data[0], 
+			'username': user_data[1], 
+			'email': user_data[2], 
+			'password_hash': user_data[4]
+		}
 	else:
 		return None
 		

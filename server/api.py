@@ -10,7 +10,7 @@ from datetime import datetime
 import secrets
 from urllib.parse import urlencode
 import requests
-from werkzeug.security import generate_password_hash
+from werkzeug.security import generate_password_hash, check_password_hash
 
 from flask import (
 	Flask, 
@@ -133,6 +133,48 @@ def create_app():
 			print("Error: Create new account not successful")
 			abort(401)
 		
+		user = User(id=user_data['id'], username=user_data['username'], email=user_data['email'])
+
+		access_token = create_access_token(identity=user.id, expires_delta=False)
+		res = make_response(redirect('http://127.0.0.1:9000/'))
+		res.set_cookie('access_token_cookie', access_token, secure=False, httponly=True, samesite='Lax', domain='127.0.0.1')
+
+		return res
+
+
+	@app.route('/login', methods=['POST'])
+	def login():
+		user = request.json['user']
+		password = request.json['password']
+
+		# Error checking
+		if not user:
+			return jsonify({'error:' 'missing username/email field'}), 400
+
+		if not password:
+			return jsonify({'error:' 'missing password field'}), 400
+
+		if len(password) < 12:
+			return jsonify({'error:' 'password does not meet the security requirements (minimum of 12 characters)'}), 400
+
+		# Check user credentials
+		password_hash = generate_password_hash(password)
+
+		authorise = False
+		
+		if user_data := psql.get_user_from_username(user):
+			if check_password_hash(user_data['password_hash'], password):
+				authorise = True
+		elif user_data := psql.get_user_from_email(user):
+			if check_password_hash(user_data['password_hash'], password):
+				authorise = True
+		else:
+			return jsonify({'error': 'username or email does not exist'}), 404
+
+		if not authorise:
+			return jsonify({'error': 'incorrect credentials'}), 401
+
+		# Create user credentials
 		user = User(id=user_data['id'], username=user_data['username'], email=user_data['email'])
 
 		access_token = create_access_token(identity=user.id, expires_delta=False)
