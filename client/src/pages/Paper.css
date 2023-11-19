@@ -34,11 +34,14 @@
 
   .action-buttons a {
   	margin-right: 0px !important;
-	width: 150px;
+	width: 180px;
+	padding-top: 9px;
+	padding-bottom: 9px;
   }
 
   .action-buttons button {
   	margin-right: 0px !important;
-	width: 150px;
+	width: 180px;
+	height: 45px;
   }
 }
