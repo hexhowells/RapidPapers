@@ -1,4 +1,5 @@
 import psycopg2 as psql
+from datetime import datetime, timedelta
 
 # Schema of the table 'papers' in the PSQL database
 #
@@ -290,19 +291,25 @@ class PSQL:
 		return results
 
 
-	def vector_search(self, embedding_str, order='relevant', num_results=50, page=1, threshold=0.7):
+	def vector_search(self, embedding_str, order='relevant', num_results=50, page=1, threshold=0.7, days_back=None):
+		if days_back:
+			date_threshold = datetime.now() - timedelta(days=days_back)
+		else:
+			date_threshold = datetime(1999, 1, 1)
+
 		query = """
 			SELECT * FROM (
 				SELECT *
 				FROM papers
 				WHERE embeddings <-> %s < %s
+				AND publish_date >= %s
 				ORDER BY embeddings <-> %s
 				LIMIT %s
 				OFFSET %s
 			) AS top_papers
 		"""
 
-		params = [embedding_str, threshold, embedding_str, num_results, ((page - 1) * num_results)]
+		params = [embedding_str, threshold, date_threshold, embedding_str, num_results, ((page - 1) * num_results)]
 
 		if order.lower() == 'asc':
 			query += " ORDER BY top_papers.publish_date ASC"

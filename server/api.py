@@ -489,7 +489,7 @@ def create_app():
 
 		sort_type = request.args.get('sort')
 		sort_type = sort_type if (sort_type != None) else 'relevant'
-
+		
 		page_num = request.args.get('page')
 		page_num = int(page_num) if (page_num != None) else 1
 
@@ -503,8 +503,10 @@ def create_app():
 		
 		combined_embeddings = np.mean([np.array(emb) for emb in paper_embeddings], axis=0)
 		embedding_str = str(combined_embeddings.tolist())
+		
+		if np.isnan(combined_embeddings).any(): return {'results': [], 'num_results': 0}
 
-		results = psql.vector_search(embedding_str, sort_type, results_per_page, page_num, threshold=0.6)
+		results = psql.vector_search(embedding_str, sort_type, results_per_page, page_num, threshold=1000, days_back=30)
 		results = [utils.paper_to_dict(paper) for paper in results]
 
 		num_found = len(results)
