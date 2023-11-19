@@ -1,10 +1,11 @@
 import search
-import faiss
 import config
+import numpy as np
 from psql import PSQL
 import utils
 
-import pickle
+from sentence_transformers import SentenceTransformer
+
 from datetime import datetime
 
 import secrets
@@ -43,12 +44,6 @@ from flask_login import (
 	current_user
 )
 
-
-def load_index():
-	with open("faiss_index.pickle", "rb") as f:
-		faiss_index = faiss.deserialize_index(pickle.load(f))
-
-	return faiss_index
 
 
 def sort_papers(papers, sort_type):
@@ -92,12 +87,11 @@ def create_app():
 		},
 	}
 
-	faiss_index = load_index()
 	psql = PSQL()
+	model = SentenceTransformer('all-MiniLM-L6-v2')
 
 	jwt = JWTManager(app)
 	login_manager = LoginManager(app)
-
 
 	@app.route('/create_account', methods=['POST'])
 	def create_account():
@@ -136,8 +130,8 @@ def create_app():
 		user = User(id=user_data['id'], username=user_data['username'], email=user_data['email'])
 
 		access_token = create_access_token(identity=user.id, expires_delta=False)
-		res = make_response(redirect('http://127.0.0.1:9000/'))
-		res.set_cookie('access_token_cookie', access_token, secure=False, httponly=True, samesite='Lax', domain='127.0.0.1')
+		res = make_response(redirect('http://192.168.1.102:3000/'))
+		res.set_cookie('access_token_cookie', access_token, secure=False, httponly=True, samesite='Lax', domain='192.168.1.102')
 
 		return res
 
@@ -178,8 +172,8 @@ def create_app():
 		user = User(id=user_data['id'], username=user_data['username'], email=user_data['email'])
 
 		access_token = create_access_token(identity=user.id, expires_delta=False)
-		res = make_response(redirect('http://127.0.0.1:9000/'))
-		res.set_cookie('access_token_cookie', access_token, secure=False, httponly=True, samesite='Lax', domain='127.0.0.1')
+		res = make_response(redirect('http://192.168.1.102:3000/'))
+		res.set_cookie('access_token_cookie', access_token, secure=False, httponly=True, samesite='Lax', domain='192.168.1.102')
 
 		return res
 
@@ -443,18 +437,17 @@ def create_app():
 		page_num = int(page_num) if (page_num != None) else 1
 
 		if query != None:
-			page_index = results_per_page * page_num
-			faiss_ids = search.faiss_search(faiss_index, query, threshold=1.2)
+			query_embedding = model.encode(query)
+			embedding_str = str(list(query_embedding))
 
-			results = search.search_paper(user_id, faiss_ids)
-			results = sort_papers(results, sort_type)
+			results = psql.vector_search(embedding_str, sort_type, results_per_page, page_num, threshold=1.2)
+			results = [utils.paper_to_dict(paper) for paper in results]
 			num_found = len(results)
-			results = results[page_index-results_per_page: page_index]
 		else:
 			num_found = results_per_page * 100
 			results = search.get_most_recent(user_id, results_per_page, page_num)
 
-		return {'results': results, 'num_results': num_found}
+		return {'results': results, 'num_results': 50*50}
 
 
 	@app.route('/api/v1/similar')
@@ -475,15 +468,15 @@ def create_app():
 
 		paper = search.fetch_paper(user_id, paper_id)
 
-		page_index = results_per_page * page_num
-		faiss_ids = search.faiss_search(faiss_index, paper['abstract'])
+		paper_embedding = model.encode(paper['title'] + "\n" + paper['abstract'])
+		embedding_str = str(list(paper_embedding))
 
-		results = search.search_paper(user_id, faiss_ids)
-		results = sort_papers(results, sort_type)
+		results = psql.vector_search(embedding_str, sort_type, results_per_page, page_num, threshold=1.2)
+		results = [utils.paper_to_dict(paper) for paper in results]
+
 		num_found = len(results)
-		results = results[page_index-results_per_page: page_index]
 
-		return {'results': results, 'num_results': num_found}
+		return {'results': results, 'num_results': 50*50}
 
 
 	@app.route('/api/v1/recommended')
@@ -502,17 +495,22 @@ def create_app():
 		page_num = int(page_num) if (page_num != None) else 1
 
 		papers = psql.get_user_papers(user_id)
-		paper_abstracts = [utils.paper_to_dict(paper)['abstract'] for paper in papers]
+		paper_embedding_strings = [utils.paper_to_dict(paper)['embedding'] for paper in papers]
+		
+		paper_embeddings = []
+		for embedding_str in paper_embedding_strings:
+			embedding = [float(num) for num in embedding_str.strip('[]').split(',')]
+			paper_embeddings.append(embedding)
+		
+		combined_embeddings = np.mean([np.array(emb) for emb in paper_embeddings], axis=0)
+		embedding_str = str(list(combined_embeddings))
 
-		page_index = results_per_page * page_num
-		faiss_ids = search.multi_faiss_search(faiss_index, paper_abstracts, threshold=0.6)
+		results = psql.vector_search(embedding_str, sort_type, results_per_page, page_num, threshold=0.6)
+		results = [utils.paper_to_dict(paper) for paper in results]
 
-		results = search.search_paper(user_id, faiss_ids)
-		results = sort_papers(results, sort_type)
 		num_found = len(results)
-		results = results[page_index-results_per_page: page_index]
 
-		return {'results': results, 'num_results': num_found}
+		return {'results': results, 'num_results': 50*50}
 
 
 	@app.route('/api/v1/paper')

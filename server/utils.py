@@ -7,10 +7,11 @@ def paper_to_dict(paper):
 		'categories': paper[4],
 		'authors': paper[5],
 		'arxiv_id': paper[6],
-		'upvotes': paper[7]
+		'upvotes': paper[7],
+		'embedding': paper[8]
 	}
-	if len(paper) == 10:
-		obj['upvote_status'] = paper[8]
-		obj['library_status'] = paper[9]
+	if len(paper) == 11:
+		obj['upvote_status'] = paper[9]
+		obj['library_status'] = paper[8]
 
 	return obj

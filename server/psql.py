@@ -26,7 +26,7 @@ class PSQL:
 		self.conn = psql.connect(
 		    host="localhost",
 		    port="5432",
-		    database="rapidpapers_dev",
+		    database="rapidpapers_pgvector",
 		    user="postgres",
 		    password="toor"
 		)
@@ -230,7 +230,7 @@ class PSQL:
 	def get_user_papers(self, user_id):
 		self.cursor.execute(
 			"SELECT p.id, p.title, p.abstract, p.publish_date, \
-			p.categories, p.authors, p.arxiv_id, p.upvotes, up.status \
+			p.categories, p.authors, p.arxiv_id, p.upvotes, p.embeddings, up.status \
 			FROM papers p \
 			JOIN user_papers up ON p.id = up.paper_id \
 			WHERE up.user_id = %s",
@@ -284,6 +284,32 @@ class PSQL:
 			OFFSET %s
 		""", [user_id, user_id, num_results, ((page - 1) * num_results)])
 
+		results = self.cursor.fetchall()
+		self.conn.commit()
+
+		return results
+
+
+	def vector_search(self, embedding_str, order='relevant', num_results=50, page=1, threshold=0.7):
+		query = """
+			SELECT * FROM (
+				SELECT *
+				FROM papers
+				WHERE embeddings <-> %s < %s
+				ORDER BY embeddings <-> %s
+				LIMIT %s
+				OFFSET %s
+			) AS top_papers
+		"""
+
+		params = [embedding_str, threshold, embedding_str, num_results, ((page - 1) * num_results)]
+
+		if order.lower() == 'asc':
+			query += " ORDER BY top_papers.publish_date ASC"
+		elif order.lower() == 'desc':
+			query += " ORDER BY top_papers.publish_date DESC"
+
+		self.cursor.execute(query, params)
 		results = self.cursor.fetchall()
 		self.conn.commit()
 
