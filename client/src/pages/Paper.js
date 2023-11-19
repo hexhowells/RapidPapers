@@ -39,10 +39,10 @@ const Paper = () => {
 			<div className="container p-0 pt-1">
 		      <div className="row">
 		      	<div className="col d-flex">
-				    <div className="d-flex align-items-center">
+				    <div className="d-flex align-items-center align-self-start">
 				        <p className="mb-0 me-2">Categories:</p>
 				    </div>
-				    <div className="d-flex align-items-center">
+				    <div className="paper-categories d-flex flex-wrap gap-1 mt-1 align-items-center">
 				        {paper.categories?.map((category, index) => (
 				            <span className="badge bg-secondary me-1 px-2">{category}</span>
 				        ))}
