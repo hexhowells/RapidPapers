@@ -34,12 +34,11 @@ const Account = () => {
 
     return (
         <div className="container">
-        	<h1 className="pb-3">Account Info</h1>
             {user && (
                 <div>
-                    <p>Username: {user.username}</p>
+                    <h2 className="pb-2">{user.username}</h2>
                     <p>Email Address: {user.email}</p>
-                    <button className="btn btn-primary" onClick={handleLogout}>Logout</button>
+                    <button className="btn btn-primary mt-4" onClick={handleLogout}>Logout</button>
                 </div>
             )}
         </div>
