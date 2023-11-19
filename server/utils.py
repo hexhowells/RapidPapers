@@ -12,6 +12,6 @@ def paper_to_dict(paper):
 	}
 	if len(paper) == 11:
 		obj['upvote_status'] = paper[9]
-		obj['library_status'] = paper[8]
+		obj['library_status'] = paper[10]
 
 	return obj
