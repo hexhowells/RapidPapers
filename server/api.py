@@ -391,9 +391,9 @@ def create_app():
 		papers = []
 		for p in _papers:
 			paper = utils.paper_to_dict(p)
-			paper['status'] = p[8]
+			paper['status'] = p[9]
 			papers.append(paper)
-
+		
 		return {'results': papers, 'num_results': len(papers)}
 
 
@@ -467,9 +467,8 @@ def create_app():
 		page_num = int(page_num) if (page_num != None) else 1
 
 		paper = search.fetch_paper(user_id, paper_id)
-
-		paper_embedding = model.encode(paper['title'] + "\n" + paper['abstract'])
-		embedding_str = str(list(paper_embedding))
+		
+		embedding_str = paper['embedding']
 
 		results = psql.vector_search(embedding_str, sort_type, results_per_page, page_num, threshold=1.2)
 		results = [utils.paper_to_dict(paper) for paper in results]
@@ -503,7 +502,7 @@ def create_app():
 			paper_embeddings.append(embedding)
 		
 		combined_embeddings = np.mean([np.array(emb) for emb in paper_embeddings], axis=0)
-		embedding_str = str(list(combined_embeddings))
+		embedding_str = str(combined_embeddings.tolist())
 
 		results = psql.vector_search(embedding_str, sort_type, results_per_page, page_num, threshold=0.6)
 		results = [utils.paper_to_dict(paper) for paper in results]
@@ -520,6 +519,7 @@ def create_app():
 		paper_id = request.args.get('id')
 
 		return search.fetch_paper(user_id, paper_id)
+
 
 	return app
 
