@@ -34,9 +34,11 @@
 
   .action-buttons a {
   	margin-right: 0px !important;
+	width: 150px;
   }
 
   .action-buttons button {
   	margin-right: 0px !important;
+	width: 150px;
   }
 }
