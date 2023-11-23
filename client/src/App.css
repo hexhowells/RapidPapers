@@ -4,11 +4,11 @@
   background-color: #fafafa;
   display: flex;
   flex-direction: column;
+  min-height: 100vh;
 }
 
 html, body, #root {
   background-color: #fafafa;
-  height: 100%;
 }
 
 .logo {
