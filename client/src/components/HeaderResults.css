@@ -5,3 +5,7 @@
 .form-select {
 	box-shadow: none !important;
 }
+
+.dropdown {
+	margin-left: auto;
+}
