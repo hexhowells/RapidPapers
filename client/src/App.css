@@ -46,3 +46,9 @@ html, body, #root {
 .read-the-docs {
   color: #888;
 }
+
+@media screen and (max-width: 600px) {
+	html, body, #root {
+		font-size: 14px;
+	}
+}
