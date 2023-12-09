@@ -37,15 +37,15 @@ const LibraryResult = (props) => {
 							</Link>
 								<p className="small-text date mb-1">{item.date}</p>
 								{item.status !== 'to read' && (
-									<a className="small-text pe-2" onClick={() => bookmark('to read')}>Mark as to Read</a>
+									<button className="small-text pe-2 btn btn-primary btn-sm mx-1" onClick={() => bookmark('to read')}>Mark as to Read</button>
 								)}
 								{item.status !== 'read' && (
-									<a className="small-text pe-2" onClick={() => bookmark('read')}>Mark as Read</a>
+									<button className="small-text pe-2 btn btn-primary btn-sm mx-1" onClick={() => bookmark('read')}>Mark as Read</button>
 								)}
 								{item.status !== 'currently reading' && (
-									<a className="small-text pe-2" onClick={() => bookmark('currently reading')}>Mark as Reading</a>
+									<button className="small-text pe-2 btn btn-primary btn-sm mx-1" onClick={() => bookmark('currently reading')}>Mark as Reading</button>
 								)}
-								<a className="small-text pe-2" onClick={removeBookmark}>Remove</a>
+								<button className="small-text pe-2 btn btn-danger btn-sm mx-1" onClick={removeBookmark}>Remove</button>
 							</div>
 						</div>
 					</div>
