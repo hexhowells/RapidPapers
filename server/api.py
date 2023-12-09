@@ -506,7 +506,7 @@ def create_app():
 		
 		if np.isnan(combined_embeddings).any(): return {'results': [], 'num_results': 0}
 
-		results = psql.vector_search(embedding_str, sort_type, results_per_page, page_num, threshold=1000, days_back=30)
+		results = psql.vector_search(embedding_str, sort_type, 50, page_num, threshold=0.8, days_back=7)
 		results = [utils.paper_to_dict(paper) for paper in results]
 
 		num_found = len(results)
