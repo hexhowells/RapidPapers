@@ -1,41 +1,8 @@
 import {Link} from "react-router-dom";
-import { useState, useEffect } from 'react';
-import { BsFillCaretUpFill, BsFillCaretDownFill, BsFillBookmarkFill, BsFillBookmarkCheckFill } from "react-icons/bs";
-import { upvote, downvote, fetchUserVote } from '../utilities/votingUtils';
-import { bookmark } from '../utilities/bookmarkUtils';
 import './Result.css'
 
 
 const Result = ({item, isAuthenticated}) => {
-	const [upvotes, setUpvotes] = useState(item.upvotes);
-	const [userVote, setUserVote] = useState(null);
-	const [isBookmarked, setIsBookmarked] = useState(false);
-
-	useEffect(() => {
-		setUpvotes(item.upvotes);
-		setUserVote(item.upvote_status);
-		setIsBookmarked(item.library_status);
-	}, [item]);
-
-
-    const handleUpvote = async () => {
-        const data = await upvote(item.id);
-        setUpvotes(data.upvotes);
-        const userVoteData = await fetchUserVote(item.id);
-        setUserVote(userVoteData);
-    };
-
-    const handleDownvote = async () => {
-        const data = await downvote(item.id);
-        setUpvotes(data.upvotes);
-        const userVoteData = await fetchUserVote(item.id);
-        setUserVote(userVoteData);
-    };
-
-    const handleBookmark = async () => {
-        await bookmark(item.id, isBookmarked);
-        setIsBookmarked(!isBookmarked);
-    };
 
 	return (
 		<>

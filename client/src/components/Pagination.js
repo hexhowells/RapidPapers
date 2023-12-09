@@ -5,20 +5,24 @@ function Pagination({ pageNum, setPageNum, numPages }) {
     const lastPage = numPages;
     const startPage = Math.max(firstPage, pageNum - 2);
     const endPage = Math.min(lastPage, pageNum + 2);
-
+	
+	// Update page on change
     const handlePageChange = (page) => {
         setPageNum(page);
         window.scrollTo({top:0, behavior:'instant'});
     };
 
+	// Goto next page
     const handleNext = () => {
         if (pageNum < lastPage) handlePageChange(pageNum + 1);
     };
 
+	// Goto previous page
     const handlePrev = () => {
         if (pageNum > firstPage) handlePageChange(pageNum - 1);
     };
 
+	// Get number of pages to display on the bottom of the screen
     let pages = [];
     for (let i = startPage; i <= endPage; i++) {
         pages.push(i);

@@ -6,7 +6,8 @@ import Result from "./Result"
 
 const ListResults = (props) => {
 	const [isAuthenticated, setIsAuthenticated] = useState(false);
-
+	
+	// Checks if user is authenticated
     useEffect(() => {
         axios.get('/profile')
             .then(response => {
