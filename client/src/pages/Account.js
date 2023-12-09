@@ -5,7 +5,8 @@ const Account = () => {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-
+	
+	// Get user details
     useEffect(() => {
         axios.get('/profile')
         .then(response => {
@@ -18,6 +19,7 @@ const Account = () => {
         });
     }, []);
 
+	// Logout user
     const handleLogout = () => {
         axios.post('/logout')
         .then(() => {
@@ -29,6 +31,7 @@ const Account = () => {
         });
     }
 
+	// Handle loading or errors
     if (loading) return <p>Loading...</p>;
     if (error) window.location.href = '/';
 

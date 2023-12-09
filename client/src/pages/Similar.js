@@ -7,12 +7,13 @@ import React, { useState, useEffect } from 'react';
 
 
 const Main = () => {
-  const { id } = useParams();
-  const [results, setResults] = useState(0);
-  const [sortType, setSortType] = useState('relevant');
-  const [pageNum, setPageNum] = useState(1);
-  const [numPages, setNumPages] = useState(100);
-
+	const { id } = useParams();
+	const [results, setResults] = useState(0);
+	const [sortType, setSortType] = useState('relevant');
+	const [pageNum, setPageNum] = useState(1);
+	const [numPages, setNumPages] = useState(100);
+	
+	// Fetch the number of pages and results
     useEffect(() => {
       fetch(`/api/v1/similar?id=${id}&sort=${sortType}&page=${pageNum}`)
         .then((res) => res.json())
@@ -29,8 +30,6 @@ const Main = () => {
     <>
     <div>
       <div className="container">
-        {/*<SearchBar setResults={setResults}></SearchBar>*/}
-
         <HeaderResults setSortType={setSortType} setPageNum={setPageNum}></HeaderResults>
         <ListResults results={results}></ListResults>
         <Pagination pageNum={pageNum} setPageNum={setPageNum} numPages={numPages}></Pagination>

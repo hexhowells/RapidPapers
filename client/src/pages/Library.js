@@ -7,6 +7,7 @@ const Library = () => {
     const [data, setData] = useState({toRead: [], reading: [], read: []});
     const [statusChange, setStatusChange] = useState(false);
 
+	// Fetch all the papers in the user's library
     useEffect(() => {
         fetch('/getuserpapers')
             .then(response => response.json())
@@ -22,6 +23,7 @@ const Library = () => {
         <div>
             <div className="container">
             <Tabs defaultActiveKey="toRead" id="reading-list-tabs">
+				{/* Papers to read tab */}
                 <Tab eventKey="toRead" title="To Read">
                     <div className="library-header ps-2">
                         <h4 className="pt-4">Papers to read</h4>
@@ -37,6 +39,7 @@ const Library = () => {
                         ))}
                     </ul>
                 </Tab>
+				{/* Papers being read tab */}
                 <Tab eventKey="reading" title="Reading">
                     <div className="ps-4">
                         <h4 className="pt-4">Papers being read</h4>
@@ -52,6 +55,7 @@ const Library = () => {
                         ))}
                     </ul>
                 </Tab>
+				{/* Papers that have been read tab */}
                 <Tab eventKey="read" title="Read">
                     <div className="ps-4">
                         <h4 className="pt-4">Papers previously read</h4>

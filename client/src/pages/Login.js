@@ -25,30 +25,30 @@ class LoginScreen extends React.Component {
     };
 
     handleSubmit = (e) => {
-    e.preventDefault();
-    // Extract email and password from the state
-    const { email, password } = this.state;
+		e.preventDefault();
+		// Extract email and password from the state
+		const { email, password } = this.state;
 
-    // Setup the request options and body
-    const requestOptions = {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-            user: email,
-            password: password
-        })
-    };
+		// Setup the request options and body
+		const requestOptions = {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify({
+				user: email,
+				password: password
+			})
+		};
 
-    // Send the login request to the server
-    fetch('/login', requestOptions)
-        .then(response => {
-            console.log(response)
-            window.location.href = response.url;
-        })
-        .catch(error => {
-            console.error('Login error:', error);
-        });
-};
+		// Send the login request to the server
+		fetch('/login', requestOptions)
+			.then(response => {
+				console.log(response)
+				window.location.href = response.url;
+			})
+			.catch(error => {
+				console.error('Login error:', error);
+			});
+	};
 
     render() {
         return (

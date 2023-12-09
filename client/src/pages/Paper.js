@@ -10,6 +10,7 @@ const Paper = () => {
 	const [paper, setPaper] = useState(0);
 	const [isBookmarked, setIsBookmarked] = useState(false); 
 
+	// Fetch user data for paper
 	useEffect(() => {
       fetch(`/api/v1/paper?id=${id.replace(/\./g, "")}`)
         .then((res) => res.json())
@@ -23,6 +24,7 @@ const Paper = () => {
     }, [id]);
 
 
+	// Add / remove paper from library
 	const handleBookmark = async () => {
 	    await bookmark(id.replace(/\./g, ""), isBookmarked);
 	    setIsBookmarked(!isBookmarked);
@@ -31,6 +33,7 @@ const Paper = () => {
 	return (
 		<>
 		<div className="container pt-2">
+			{/* Paper details */}
 			<h3>{paper.title}</h3>
 			<p className="mb-1"><i>{paper.authors?.map((author) => author.replace(/\\/g, '')).join(", ")}</i></p>
 			<p>{paper.date}</p>
@@ -51,6 +54,7 @@ const Paper = () => {
 		      </div>
 		    </div>
 			<br></br>
+			{/* Paper action buttons */}
 			<div className="action-buttons">
 				<a className="btn btn-primary mt-3 me-2" 
 					href={`https://arxiv.org/abs/${paper.arxiv_id}`} 

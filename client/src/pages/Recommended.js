@@ -6,11 +6,12 @@ import React, { useState, useEffect } from 'react';
 
 
 const Main = () => {
-  const [results, setResults] = useState(0);
-  const [sortType, setSortType] = useState('desc');
-  const [pageNum, setPageNum] = useState(1);
-  const [numPages, setNumPages] = useState(100);
-
+	const [results, setResults] = useState(0);
+	const [sortType, setSortType] = useState('desc');
+	const [pageNum, setPageNum] = useState(1);
+	const [numPages, setNumPages] = useState(100);
+	
+	// Fetch the number of pages and results 
     useEffect(() => {
       fetch(`/api/v1/recommended?sort=${sortType}&page=${pageNum}`)
         .then((res) => res.json())
@@ -27,8 +28,6 @@ const Main = () => {
     <>
     <div>
       <div className="container">
-        {/*<SearchBar setResults={setResults}></SearchBar>*/}
-
         <HeaderResults setSortType={setSortType} setPageNum={setPageNum} headerTitle="Recommended for you"></HeaderResults>
         <ListResults results={results}></ListResults>
         <Pagination pageNum={pageNum} setPageNum={setPageNum} numPages={numPages}></Pagination>
