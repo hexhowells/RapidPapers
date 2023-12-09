@@ -52,7 +52,7 @@ class LoginScreen extends React.Component {
 
     render() {
         return (
-            <div className="container d-flex justify-content-center align-items-center" style={{ height: '100vh' }}>
+            <div className="container d-flex justify-content-center align-items-center" style={{ 'margin-top': 'auto' }}>
                 <div className="card p-4" style={{ width: '400px' }}>
                     <div className="card-body">
                         <h2 className="card-title text-center mb-4">Login</h2>
