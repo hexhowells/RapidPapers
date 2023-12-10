@@ -3,11 +3,18 @@ from datetime import datetime, timedelta
 
 # Schema of the table 'papers' in the PSQL database
 #
-#  id | title | abstract | publish_date | categories | authors  | arxiv_id | upvotes
-# ----+-------+----------+--------------+------------+----------+----------+--------
+#  id | title | abstract | publish_date | categories | authors  | arxiv_id | upvotes | embedding
+# ----+-------+----------+--------------+------------+----------+----------+---------+----------
 
 
 def convert_user_to_dict(user_data, include_password=False):
+	"""
+	Convert user data into a dictionary to return back to the API
+
+	Args
+		user_data: list[strings]
+		include_password: Boolean, default=False
+	"""
 	if user_data:
 		user_dict = {
 			'id': user_data[0], 
@@ -23,6 +30,10 @@ def convert_user_to_dict(user_data, include_password=False):
 		
 
 class PSQL:
+	"""
+	Class for interacting with the backend PSQL database
+
+	"""
 	def __init__(self):
 		self.conn = psql.connect(
 		    host="localhost",
@@ -36,6 +47,15 @@ class PSQL:
 
 
 	def fetch_paper(self, paper_id):
+		"""
+		Fetch a paper
+
+		Args
+			paper_id: string
+
+		Return
+			List[string]
+		"""
 		self.cursor.execute("SELECT * FROM papers WHERE id=%s", [paper_id,])
 		records = self.cursor.fetchall()
 
@@ -43,6 +63,16 @@ class PSQL:
 
 
 	def fetch_all(self, num_results, page):
+		"""
+		Fetch all recent papers in database
+
+		Args
+			num_results: int
+			page: int - page offset
+
+		Return
+			List[string]
+		"""
 		self.cursor.execute(
 			"SELECT * \
 			FROM papers \
@@ -57,6 +87,15 @@ class PSQL:
 
 
 	def get_user_from_email(self, email):
+		"""
+		Get user details given their email
+
+		Args
+			email: string
+
+		Return
+			Dict{string: string}
+		"""
 		self.cursor.execute(
 			"SELECT * \
 			FROM users \
@@ -69,6 +108,15 @@ class PSQL:
 
 
 	def get_user_from_username(self, username):
+		"""
+		Get user details given their username
+
+		Args
+			username: string
+
+		Return
+			Dict{string, string}
+		"""
 		self.cursor.execute(
 			"SELECT * \
 			FROM users \
@@ -81,6 +129,15 @@ class PSQL:
 
 
 	def get_user(self, user_id):
+		"""
+		Get user details given a user ID
+
+		Args
+			user_id: string
+
+		Return
+			Dict{string, string}
+		"""
 		self.cursor.execute(
 			"SELECT * \
 			FROM users \
@@ -93,6 +150,17 @@ class PSQL:
 
 
 	def create_user(self, username, email, password_hash=None):
+		"""
+		Create a new user account
+
+		Args
+			username: string
+			email: string
+			password_hash: string
+
+		Return
+			Dict{string, string}
+		"""
 		# Prepare the basic insert statement and values
 		insert_query = "INSERT INTO users (username, email"
 		values = [username, email]
@@ -116,82 +184,17 @@ class PSQL:
 		return convert_user_to_dict(user_data)
 
 
-	def check_vote(self, user_id, paper_id):
-		self.cursor.execute(
-			"SELECT vote \
-			FROM user_votes \
-			WHERE user_id = %s \
-			AND paper_id = %s",
-			[user_id, paper_id]
-			)
-		user_data = self.cursor.fetchone()
-		self.conn.commit()
-
-		return user_data
-
-
-	def _update_paper_vote(self, paper_id, value):
-		self.cursor.execute(
-			"UPDATE papers \
-			SET upvotes = upvotes + %s \
-        	WHERE id = %s",
-        	[value, paper_id]
-			)
-		self.conn.commit()
-
-
-	def upvote_paper(self, user_id, paper_id, vote_change=1):
-		self.cursor.execute(
-			"INSERT INTO user_votes \
-			(user_id, paper_id, vote) VALUES (%s, %s, %s) \
-        	ON CONFLICT (user_id, paper_id) \
-        	DO UPDATE SET vote = %s",
-        	[user_id, paper_id, "up", "up"]
-			)
-		self.conn.commit()
-		self._update_paper_vote(paper_id, vote_change)
-
-
-	def downvote_paper(self, user_id, paper_id, vote_change=-1):
-		self.cursor.execute(
-			"INSERT INTO user_votes \
-			(user_id, paper_id, vote) VALUES (%s, %s, %s) \
-        	ON CONFLICT (user_id, paper_id) \
-        	DO UPDATE SET vote = %s",
-        	[user_id, paper_id, "down", "down"]
-			)
-		self.conn.commit()
-		self._update_paper_vote(paper_id, vote_change)
-
-
-	def undo_paper_vote(self, user_id, paper_id, vote_change):
-		self.cursor.execute(
-			"DELETE FROM user_votes \
-			WHERE user_id = %s \
-			AND paper_id = %s",
-        	[user_id, paper_id]
-			)
-		self.conn.commit()
-		self._update_paper_vote(paper_id, vote_change)
-
-
-	def get_paper_upvotes(self, paper_id):
-		self.cursor.execute(
-			"SELECT upvotes \
-			FROM papers \
-			WHERE id = %s",
-        	[paper_id]
-			)
-		upvotes = self.cursor.fetchone()
-		self.conn.commit()
-		
-		if upvotes:
-			return upvotes[0]
-		else:
-			return None
-
-
 	def check_user_paper(self, user_id, paper_id):
+		"""
+		Get the status of a paper in the user's library (e.g. Reading, ToRead, Read)
+
+		Args
+			user_id: string
+			paper_id: string
+
+		Return
+			string
+		"""
 		self.cursor.execute(
 			"SELECT status \
 			FROM user_papers \
@@ -206,6 +209,17 @@ class PSQL:
 
 
 	def set_user_paper(self, user_id, paper_id, status):
+		"""
+		Add a paper or change the status of a paper in the user's library
+
+		Args
+			user_id: string
+			paper_id: string
+			status: string
+
+		Return
+			string
+		"""
 		self.cursor.execute(
 			"INSERT INTO user_papers \
 			(user_id, paper_id, status) VALUES (%s, %s, %s) \
@@ -219,6 +233,13 @@ class PSQL:
 
 
 	def remove_user_paper(self, user_id, paper_id):
+		"""
+		Remove a paper from the user's library
+
+		Args
+			user_id: string
+			paper_id: string
+		"""
 		self.cursor.execute(
 			"DELETE FROM user_papers \
 			WHERE user_id = %s \
@@ -229,6 +250,15 @@ class PSQL:
 
 
 	def get_user_papers(self, user_id):
+		"""
+		Get all the papers in the user's library
+
+		Args
+			user_id: string
+
+		Return
+			List[List[string]]
+		"""
 		self.cursor.execute(
 			"SELECT p.id, p.title, p.abstract, p.publish_date, \
 			p.categories, p.authors, p.arxiv_id, p.upvotes, p.embeddings, up.status \
@@ -243,6 +273,16 @@ class PSQL:
 
 
 	def check_user_paper_exists(self, user_id, paper_id):
+		"""
+		Check if paper exists in the user's library
+
+		Args
+			user_id: string
+			paper_id: string
+
+		Return
+			Boolean
+		"""
 		self.cursor.execute(
 			"SELECT EXISTS(SELECT 1 FROM user_papers \
 			WHERE user_id = %s AND paper_id = %s)",
@@ -254,6 +294,16 @@ class PSQL:
 
 
 	def fetch_paper_details(self, user_id, paper_id):
+		"""
+		Fetch the paper details, library status, and upvotes (OUTDATED!) of a specific paper
+
+		Args
+			user_id: string
+			paper_id: string
+
+		Return
+			List[List[string]]
+		"""
 		self.cursor.execute("""
 			SELECT 
 				papers.*, 
@@ -272,6 +322,17 @@ class PSQL:
 
 
 	def fetch_all_details(self, user_id, num_results, page):
+		"""
+		Fetch the paper details, library status, and upvotes (OUTDATED!) of most recent papers
+
+		Args
+			user_id: string
+			num_results: int
+			page: int
+
+		Return
+			List[List[string]]
+		"""
 		self.cursor.execute("""
 			SELECT 
 				papers.*,
@@ -292,6 +353,20 @@ class PSQL:
 
 
 	def vector_search(self, embedding_str, order='relevant', num_results=50, page=1, threshold=0.7, days_back=None):
+		"""
+		Perform vector search given a query embedding
+
+		Args
+			embedding_str: string
+			order: string (Default='relevant')
+			num_results: int (Default=50)
+			page: int (Default=1)
+			threshold: float (Default=0.7)
+			days_back: int (Default=None)
+
+		Return
+			List[string]
+		"""
 		if days_back:
 			date_threshold = datetime.now() - timedelta(days=days_back)
 		else:
