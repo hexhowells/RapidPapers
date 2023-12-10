@@ -95,6 +95,14 @@ def create_app():
 
 	@app.route('/create_account', methods=['POST'])
 	def create_account():
+		"""
+		Create a new user account
+		
+		Requires
+			- username: string
+			- email: string
+			- password: string, (len >= 12)
+		"""
 		username = request.json['username']
 		email = request.json['email']
 		password = request.json['password']
@@ -138,6 +146,13 @@ def create_app():
 
 	@app.route('/login', methods=['POST'])
 	def login():
+		"""
+		Login to the site
+		
+		Requires:
+			- username/email: string
+			- password: string
+		"""
 		user = request.json['user']
 		password = request.json['password']
 
@@ -147,9 +162,6 @@ def create_app():
 
 		if not password:
 			return jsonify({'error:' 'missing password field'}), 400
-
-		if len(password) < 12:
-			return jsonify({'error:' 'password does not meet the security requirements (minimum of 12 characters)'}), 400
 
 		# Check user credentials
 		password_hash = generate_password_hash(password)
@@ -181,6 +193,12 @@ def create_app():
 
 	@app.route('/authorise/<provider>')
 	def oauth2_authorize(provider):
+		"""
+		Authorise user with OAuth2
+		
+		Args:
+			- provider: string
+		"""
 		provider_data = current_app.config['OAUTH2_PROVIDERS'].get(provider)
 
 		if provider_data is None:
@@ -203,6 +221,12 @@ def create_app():
 
 	@app.route('/callback/<provider>')
 	def oauth2_callback(provider):
+		"""
+		Callback function after authorising with OAuth2
+		
+		Args:
+			- provider: string
+		"""
 		provider_data = current_app.config['OAUTH2_PROVIDERS'].get(provider)
 		if provider_data is None:
 			abort(404)
@@ -270,86 +294,28 @@ def create_app():
 	@app.route('/profile')
 	@jwt_required()
 	def get_user_profile():
-	    user_id = get_jwt_identity()
-	    user_data = psql.get_user(user_id)
+		"""
+		Gets the user's information
 
-	    if not user_data:
-	        return jsonify({"msg": "User not found"}), 404
-
-	    return jsonify(user_data), 200
-
-
-	@app.route('/upvote', methods=['POST'])
-	@jwt_required()
-	def upvote_paper():
+		"""
 		user_id = get_jwt_identity()
-		if not user_id:
-			print("No user id found: ", user_id)
-			abort(401)
+		user_data = psql.get_user(user_id)
+		
+		if not user_data:
+			return jsonify({"msg": "User not found"}), 404
 
-		paper_id = request.json['paper_id']
-		if not paper_id:
-			return make_response('Paper ID not found', 401)
-
-		upvote_status = psql.check_vote(user_id, paper_id)
-
-		if not upvote_status:
-			psql.upvote_paper(user_id, paper_id)
-			return make_response(jsonify({"upvotes": psql.get_paper_upvotes(paper_id)}), 200)
-		elif upvote_status[0] == "up":
-			psql.undo_paper_vote(user_id, paper_id, -1)
-			return make_response(jsonify({"upvotes": psql.get_paper_upvotes(paper_id)}), 200)
-		else:
-			psql.upvote_paper(user_id, paper_id, 2)
-			return make_response(jsonify({"upvotes": psql.get_paper_upvotes(paper_id)}), 200)
-
-
-	@app.route('/downvote', methods=['POST'])
-	@jwt_required()
-	def downvote_paper():
-		user_id = get_jwt_identity()
-		if not user_id:
-		 abort(401)
-
-		paper_id = request.json['paper_id']
-		if not paper_id:
-			return make_response('Paper ID not found', 401)
-
-		upvote_status = psql.check_vote(user_id, paper_id)
-
-		if not upvote_status:
-			psql.downvote_paper(user_id, paper_id)
-			return make_response(jsonify({"upvotes": psql.get_paper_upvotes(paper_id)}), 200)
-		elif upvote_status[0] == "down":
-			psql.undo_paper_vote(user_id, paper_id, 1)
-			return make_response(jsonify({"upvotes": psql.get_paper_upvotes(paper_id)}), 200)
-		else:
-			psql.downvote_paper(user_id, paper_id, -2)
-			return make_response(jsonify({"upvotes": psql.get_paper_upvotes(paper_id)}), 200)
-
-
-	@app.route('/uservote', methods=['GET'])
-	@jwt_required()
-	def get_user_vote():
-		user_id = get_jwt_identity()
-		if not user_id:
-			abort(401)
-
-		paper_id = request.args.get('paper_id')
-		if not paper_id:
-			return make_response('Paper ID not found', 401)
-
-		upvote_status = psql.check_vote(user_id, paper_id)
-
-		if not upvote_status:
-			return make_response(jsonify({"user_vote": None}), 200)
-		else:
-			return make_response(jsonify({"user_vote": upvote_status[0]}), 200)
+		return jsonify(user_data), 200
 
 
 	@app.route('/addpaper', methods=['POST'])
 	@jwt_required()
 	def add_user_paper():
+		"""
+		Add paper to the user's library
+
+		Requires
+			- paper_id: string
+		"""
 		user_id = get_jwt_identity()
 		if not user_id:
 			abort(401)
@@ -368,6 +334,12 @@ def create_app():
 	@app.route('/removepaper', methods=['POST'])
 	@jwt_required()
 	def remove_user_paper():
+		"""
+		Remove paper from the user's library
+
+		Requires
+			- paper_id: string
+		"""
 		user_id = get_jwt_identity()
 		if not user_id:
 			abort(401)
@@ -383,6 +355,10 @@ def create_app():
 	@app.route('/getuserpapers', methods=['GET'])
 	@jwt_required()
 	def get_user_papers():
+		"""
+		Get all papers from the user's library
+
+		"""
 		user_id = get_jwt_identity()
 		if not user_id:
 			abort(401)
@@ -400,6 +376,12 @@ def create_app():
 	@app.route('/isbookmarked', methods=['GET'])
 	@jwt_required()
 	def check_user_paper():
+		"""
+		Check if a paper exists in the user's library
+
+		Requires
+			- paper_id: string
+		"""
 		user_id = get_jwt_identity()
 		if not user_id:
 			abort(401)
@@ -414,6 +396,10 @@ def create_app():
 
 	@app.route('/logout', methods=['POST'])
 	def logout():
+		"""
+		Logout the user from the site
+
+		"""
 		response = make_response(redirect('/'), 200)
 		response.set_cookie('access_token_cookie', '', expires=0)
 
@@ -423,6 +409,15 @@ def create_app():
 	@app.route('/api/v1/search')
 	@jwt_required(optional=True)
 	def search_papers():
+		"""
+		Search for papers given a search query.
+		Encodes the user query into a feature space and uses vector search to find similar papers
+		
+		If the query is an empty string then get the most recent papers
+
+		Requires
+			- query: string
+		"""
 		user_id = get_jwt_identity()
 		query = request.args.get('query')
 
@@ -437,13 +432,16 @@ def create_app():
 		page_num = int(page_num) if (page_num != None) else 1
 
 		if query != None:
+			# get embedding of the users query
 			query_embedding = model.encode(query)
 			embedding_str = str(list(query_embedding))
 
+			# perform vector search to get the results
 			results = psql.vector_search(embedding_str, sort_type, results_per_page, page_num, threshold=1.2)
 			results = [utils.paper_to_dict(paper) for paper in results]
 			num_found = len(results)
 		else:
+			# User supplied no query, get the top N papers instead
 			num_found = results_per_page * 100
 			results = search.get_most_recent(user_id, results_per_page, page_num)
 
@@ -453,6 +451,12 @@ def create_app():
 	@app.route('/api/v1/similar')
 	@jwt_required(optional=True)
 	def search_similar():
+		"""
+		Get similar papers given a paper using vector search
+
+		Requires
+			- paper_id: string
+		"""
 		user_id = get_jwt_identity()
 		paper_id = request.args.get('id')
 
@@ -465,11 +469,12 @@ def create_app():
 
 		page_num = request.args.get('page')
 		page_num = int(page_num) if (page_num != None) else 1
-
-		paper = search.fetch_paper(user_id, paper_id)
 		
+		# fetch the pre-computed embedding of the query paper
+		paper = search.fetch_paper(user_id, paper_id)
 		embedding_str = paper['embedding']
 
+		# find similar papers using vector search
 		results = psql.vector_search(embedding_str, sort_type, results_per_page, page_num, threshold=1.2)
 		results = [utils.paper_to_dict(paper) for paper in results]
 
@@ -481,6 +486,13 @@ def create_app():
 	@app.route('/api/v1/recommended')
 	@jwt_required(optional=True)
 	def get_recommended():
+		"""
+		Get recommended papers
+
+		Combines all the paper embeddings in the user's library to generate a search query,
+		uses vector search to get similar papers
+
+		"""
 		user_id = get_jwt_identity()
 
 		results_per_page = request.args.get('num_results')
@@ -493,19 +505,23 @@ def create_app():
 		page_num = request.args.get('page')
 		page_num = int(page_num) if (page_num != None) else 1
 
+		# Get all the feature embeddings for all the papers in the user's library
 		papers = psql.get_user_papers(user_id)
 		paper_embedding_strings = [utils.paper_to_dict(paper)['embedding'] for paper in papers]
 		
+		# Convert the embedding strings into floats
 		paper_embeddings = []
 		for embedding_str in paper_embedding_strings:
 			embedding = [float(num) for num in embedding_str.strip('[]').split(',')]
 			paper_embeddings.append(embedding)
 		
+		# Combine the embeddings by computing the average
 		combined_embeddings = np.mean([np.array(emb) for emb in paper_embeddings], axis=0)
 		embedding_str = str(combined_embeddings.tolist())
 		
 		if np.isnan(combined_embeddings).any(): return {'results': [], 'num_results': 0}
 
+		# Use vector search to get recommended papers
 		results = psql.vector_search(embedding_str, sort_type, 50, page_num, threshold=0.8, days_back=7)
 		results = [utils.paper_to_dict(paper) for paper in results]
 
@@ -517,6 +533,12 @@ def create_app():
 	@app.route('/api/v1/paper')
 	@jwt_required(optional=True)
 	def get_paper():
+		"""
+		Get the details of a paper
+
+		Requires
+			- paper_id: string
+		"""
 		user_id = get_jwt_identity()
 		paper_id = request.args.get('id')
 
