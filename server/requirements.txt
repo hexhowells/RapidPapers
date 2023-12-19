@@ -1,6 +1,7 @@
 Flask
 Flask-JWT-Extended
 Flask-Login
+Flask-Limiter
 sentence-transformers
 psycopg2-binary
 numpy

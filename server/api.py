@@ -44,6 +44,8 @@ from flask_login import (
 	current_user
 )
 
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
 
 
 def sort_papers(papers, sort_type):
@@ -65,6 +67,12 @@ class User(UserMixin):
 
 def create_app():
 	app = Flask(__name__)
+
+	limiter = Limiter(
+		get_remote_address,
+		app=app,
+		default_limits=["200 per day", "50 per hour"]
+	)
 
 	app.config["JWT_TOKEN_LOCATION"] = ["cookies"]  # Enable JWT extraction from cookies
 	app.config["JWT_SECRET_KEY"] = config.jwt_secret_key
@@ -94,6 +102,7 @@ def create_app():
 	login_manager = LoginManager(app)
 
 	@app.route('/create_account', methods=['POST'])
+	@limiter.limit("5/second")
 	def create_account():
 		"""
 		Create a new user account
@@ -145,6 +154,7 @@ def create_app():
 
 
 	@app.route('/login', methods=['POST'])
+	@limiter.limit("5/second")
 	def login():
 		"""
 		Login to the site
@@ -192,6 +202,7 @@ def create_app():
 
 
 	@app.route('/authorise/<provider>')
+	@limiter.limit("5/second")
 	def oauth2_authorize(provider):
 		"""
 		Authorise user with OAuth2
@@ -219,7 +230,8 @@ def create_app():
 		return {'redirect_url': redirect_url}
 
 
-	@app.route('/callback/<provider>')
+	@app.route('/callback/<provider>')	
+	@limiter.limit("5/second")
 	def oauth2_callback(provider):
 		"""
 		Callback function after authorising with OAuth2
@@ -292,6 +304,7 @@ def create_app():
 
 
 	@app.route('/profile')
+	@limiter.limit("20/second")
 	@jwt_required()
 	def get_user_profile():
 		"""
@@ -308,6 +321,7 @@ def create_app():
 
 
 	@app.route('/addpaper', methods=['POST'])
+	@limiter.limit("10/second")
 	@jwt_required()
 	def add_user_paper():
 		"""
@@ -332,6 +346,7 @@ def create_app():
 
 
 	@app.route('/removepaper', methods=['POST'])
+	@limiter.limit("10/second")
 	@jwt_required()
 	def remove_user_paper():
 		"""
@@ -353,6 +368,7 @@ def create_app():
 
 
 	@app.route('/getuserpapers', methods=['GET'])
+	@limiter.limit("10/second")
 	@jwt_required()
 	def get_user_papers():
 		"""
@@ -374,6 +390,7 @@ def create_app():
 
 
 	@app.route('/isbookmarked', methods=['GET'])
+	@limiter.limit("30/second")
 	@jwt_required()
 	def check_user_paper():
 		"""
@@ -395,6 +412,7 @@ def create_app():
 
 
 	@app.route('/logout', methods=['POST'])
+	@limiter.limit("5/second")
 	def logout():
 		"""
 		Logout the user from the site
@@ -407,6 +425,7 @@ def create_app():
 
 
 	@app.route('/api/v1/search')
+	@limiter.limit("1/second")
 	@jwt_required(optional=True)
 	def search_papers():
 		"""
@@ -449,6 +468,7 @@ def create_app():
 
 
 	@app.route('/api/v1/similar')
+	@limiter.limit("1/second")
 	@jwt_required(optional=True)
 	def search_similar():
 		"""
@@ -484,6 +504,7 @@ def create_app():
 
 
 	@app.route('/api/v1/recommended')
+	@limiter.limit("1/second")
 	@jwt_required(optional=True)
 	def get_recommended():
 		"""
@@ -531,6 +552,7 @@ def create_app():
 
 
 	@app.route('/api/v1/paper')
+	@limiter.limit("10/second")
 	@jwt_required(optional=True)
 	def get_paper():
 		"""
