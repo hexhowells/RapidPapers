@@ -1,7 +1,7 @@
 import search
 import config
 import numpy as np
-from psql import PSQL
+import psql
 import utils
 
 from sentence_transformers import SentenceTransformer
@@ -95,7 +95,6 @@ def create_app():
 		},
 	}
 
-	psql = PSQL()
 	model = SentenceTransformer('all-MiniLM-L6-v2')
 
 	jwt = JWTManager(app)
@@ -425,7 +424,7 @@ def create_app():
 
 
 	@app.route('/api/v1/search')
-	@limiter.limit("1/second")
+	@limiter.limit("5/second")
 	@jwt_required(optional=True)
 	def search_papers():
 		"""
@@ -468,7 +467,7 @@ def create_app():
 
 
 	@app.route('/api/v1/similar')
-	@limiter.limit("1/second")
+	@limiter.limit("5/second")
 	@jwt_required(optional=True)
 	def search_similar():
 		"""
@@ -504,7 +503,7 @@ def create_app():
 
 
 	@app.route('/api/v1/recommended')
-	@limiter.limit("1/second")
+	@limiter.limit("5/second")
 	@jwt_required(optional=True)
 	def get_recommended():
 		"""
