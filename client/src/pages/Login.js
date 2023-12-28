@@ -87,10 +87,6 @@ class LoginScreen extends React.Component {
                             New user? <a href="/signup">Create an account</a>
                         </p>
                     </div>
-                    <p className="text-center">Or</p>
-                    <button className="btn m-2 google-signin" onClick={() => this.handleButtonClick('google')}>
-                        Sign in with Google
-                    </button>
                 </div>
             </div>
         );

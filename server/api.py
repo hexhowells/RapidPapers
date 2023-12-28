@@ -209,6 +209,8 @@ def create_app():
 		Args:
 			- provider: string
 		"""
+		abort(501)
+
 		provider_data = current_app.config['OAUTH2_PROVIDERS'].get(provider)
 
 		if provider_data is None:
@@ -238,6 +240,8 @@ def create_app():
 		Args:
 			- provider: string
 		"""
+		abort(501)
+
 		provider_data = current_app.config['OAUTH2_PROVIDERS'].get(provider)
 		if provider_data is None:
 			abort(404)
