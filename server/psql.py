@@ -222,6 +222,32 @@ def create_user(username, email, password_hash=None):
 		connection_pool.putconn(conn)
 
 
+def update_password(user_id, new_password_hash):
+	"""
+	Update the user's password hash
+
+	Args:
+		user_id: string
+		new_password_hash: string
+
+	"""
+	conn = connection_pool.getconn()
+
+	try:
+		with conn.cursor() as cursor:
+			cursor.execute(
+				"UPDATE users \
+				SET password_hash = %s \
+				WHERE id = %s",
+				[new_password_hash, user_id]
+				)
+			conn.commit()
+	except Exception as e:
+		print("An error occurred:", e)
+	finally:
+		connection_pool.putconn(conn)
+
+
 def check_user_paper(user_id, paper_id):
 	"""
 	Get the status of a paper in the user's library (e.g. Reading, ToRead, Read)

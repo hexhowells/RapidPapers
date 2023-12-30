@@ -322,6 +322,57 @@ def create_app():
 
 		return jsonify(user_data), 200
 
+	
+	@app.route('/updatepassword', methods=['POST'])
+	@limiter.limit('10/second')
+	@jwt_required()
+	def change_user_password():
+		"""
+		Changes the user's password
+
+		Requires
+			- old_password: string
+			- new_password: string
+			- confirm_new_password: string
+		"""
+		user_id = get_jwt_identity()
+		if not user_id:
+			abort(401)
+
+		user = request.json['user']
+		old_password = request.json['old_password']
+		new_password = request.json['new_password']
+		confirm_new_password = request.json['confirm_new_password']
+		
+		# Check inputs
+		if not user:
+			return jsonify({'error:' 'missing user field'}), 400	
+
+		if not old_password:
+			return jsonify({'error:' 'missing old password field'}), 400	
+
+		if not new_password:
+			return jsonify({'error:' 'missing new password field'}), 400
+
+		if not confirm_new_password:
+			return jsonify({'error:' 'missing confirm new password field'}), 400
+
+		# Check user credentials
+		if user_data := psql.get_user(user_id):
+			if not check_password_hash(user_data['password_hash'], old_password):
+				return jsonify({'error': 'passwords do not match'}), 401
+		else:
+			return jsonify({'error': 'username does not match'}), 401
+		
+		if new_password != confirm_new_password:
+			return jsonify({'error': 'new password and confirm password fields do not match'}), 412
+
+		# Update password hash
+		new_password_hash = generate_password_hash(new_password)
+		psql.update_password(user_id, new_password_hash)
+
+		return make_response(jsonify({'msg': 'success'}), 200)
+		
 
 	@app.route('/addpaper', methods=['POST'])
 	@limiter.limit("10/second")
