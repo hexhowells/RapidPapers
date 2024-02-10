@@ -45,7 +45,7 @@ class SignupScreen extends React.Component {
         };
 
         // Send the request to the create_account route
-        fetch('/create_account', requestOptions)
+        fetch('/api/v1/create_account', requestOptions)
             .then(response => {
                 window.location.href = response.url;
             })

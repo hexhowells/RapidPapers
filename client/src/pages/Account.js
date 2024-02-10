@@ -14,7 +14,7 @@ const Account = () => {
 	const [confirmNewPassword, setConfirmNewPassword] = useState('');
 
 	useEffect(() => {
-		axios.get('/profile')
+		axios.get('/api/v1/profile')
 		.then(response => {
 			setUser(response.data);
 			setLoading(false);
@@ -26,7 +26,7 @@ const Account = () => {
 	}, []);
 
 	const handleLogout = () => {
-		axios.post('/logout')
+		axios.post('/api/v1/logout')
 		.then(() => {
 			setUser(null);
 			window.location.href = '/';
@@ -81,7 +81,7 @@ const Account = () => {
 			confirm_new_password: confirmNewPassword
 		}
 		
-		axios.post('/updatepassword', data)
+		axios.post('/api/v1/updatepassword', data)
 		.then(() => {
 			;
 		})
@@ -93,7 +93,7 @@ const Account = () => {
 
 	const handleDeleteAccount = () => {
 		if(window.confirm('Are you sure you want to delete your account?')) {
-			axios.delete('/delete-account')
+			axios.delete('/api/v1/delete-account')
 			.then(() => {
 				setUser(null);
 				window.location.href = '/';

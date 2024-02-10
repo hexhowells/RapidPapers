@@ -100,7 +100,7 @@ def create_app():
 	jwt = JWTManager(app)
 	login_manager = LoginManager(app)
 
-	@app.route('/create_account', methods=['POST'])
+	@app.route('/api/v1/create_account', methods=['POST'])
 	@limiter.limit("5/second")
 	def create_account():
 		"""
@@ -152,7 +152,7 @@ def create_app():
 		return res
 
 
-	@app.route('/login', methods=['POST'])
+	@app.route('/api/v1/login', methods=['POST'])
 	@limiter.limit("5/second")
 	def login():
 		"""
@@ -200,7 +200,7 @@ def create_app():
 
 
 
-	@app.route('/authorise/<provider>')
+	@app.route('/api/v1/authorise/<provider>')
 	@limiter.limit("5/second")
 	def oauth2_authorize(provider):
 		"""
@@ -231,7 +231,7 @@ def create_app():
 		return {'redirect_url': redirect_url}
 
 
-	@app.route('/callback/<provider>')	
+	@app.route('/api/v1/callback/<provider>')	
 	@limiter.limit("5/second")
 	def oauth2_callback(provider):
 		"""
@@ -306,7 +306,7 @@ def create_app():
 		return res
 
 
-	@app.route('/profile')
+	@app.route('/api/v1/profile')
 	@limiter.limit("20/second")
 	@jwt_required()
 	def get_user_profile():
@@ -323,7 +323,7 @@ def create_app():
 		return jsonify(user_data), 200
 
 	
-	@app.route('/updatepassword', methods=['POST'])
+	@app.route('/api/v1/updatepassword', methods=['POST'])
 	@limiter.limit('10/second')
 	@jwt_required()
 	def change_user_password():
@@ -374,7 +374,7 @@ def create_app():
 		return make_response(jsonify({'msg': 'success'}), 200)
 		
 
-	@app.route('/addpaper', methods=['POST'])
+	@app.route('/api/v1/addpaper', methods=['POST'])
 	@limiter.limit("10/second")
 	@jwt_required()
 	def add_user_paper():
@@ -399,7 +399,7 @@ def create_app():
 		return make_response(jsonify({"user_paper_status": status}), 200)
 
 
-	@app.route('/removepaper', methods=['POST'])
+	@app.route('/api/v1/removepaper', methods=['POST'])
 	@limiter.limit("10/second")
 	@jwt_required()
 	def remove_user_paper():
@@ -421,7 +421,7 @@ def create_app():
 		return make_response('', 200)
 
 
-	@app.route('/getuserpapers', methods=['GET'])
+	@app.route('/api/v1/getuserpapers', methods=['GET'])
 	@limiter.limit("10/second")
 	@jwt_required()
 	def get_user_papers():
@@ -443,7 +443,7 @@ def create_app():
 		return {'results': papers, 'num_results': len(papers)}
 
 
-	@app.route('/isbookmarked', methods=['GET'])
+	@app.route('/api/v1/isbookmarked', methods=['GET'])
 	@limiter.limit("30/second")
 	@jwt_required()
 	def check_user_paper():
@@ -465,7 +465,7 @@ def create_app():
 		return {'is_bookmarked': bookmark_exists}
 
 
-	@app.route('/logout', methods=['POST'])
+	@app.route('/api/v1/logout', methods=['POST'])
 	@limiter.limit("5/second")
 	def logout():
 		"""

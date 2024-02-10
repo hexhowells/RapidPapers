@@ -9,7 +9,7 @@ const Library = () => {
 
 	// Fetch all the papers in the user's library
     useEffect(() => {
-        fetch('/getuserpapers')
+        fetch('/api/v1/getuserpapers')
             .then(response => response.json())
             .then(data => {
                 const toRead = data['results'].filter(paper => paper.status === 'to read');
