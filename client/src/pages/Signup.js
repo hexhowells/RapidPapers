@@ -7,7 +7,8 @@ class SignupScreen extends React.Component {
         password: '',
         confirmPassword: '',
         passwordMismatch: false,
-        passwordShort: false
+        passwordShort: false,
+		signupErrorMessage: ''
     };
 
     handleInputChange = (e) => {
@@ -47,7 +48,13 @@ class SignupScreen extends React.Component {
         // Send the request to the create_account route
         fetch('/api/v1/create_account', requestOptions)
             .then(response => {
-                window.location.href = response.url;
+				if (response.ok) {
+                	window.location.href = response.url;
+				} else {
+					response.json().then(error => {
+						this.setState(prevState => ({...prevState, signupErrorMessage: error.error}));
+					})
+				}
             })
             .catch(error => {
                 console.error('Signup failed:', error);
@@ -55,6 +62,8 @@ class SignupScreen extends React.Component {
     };
 
     render() {
+		const { signupErrorMessage } = this.state;
+
         return (
             <div className="container d-flex justify-content-center align-items-center" style={{ 'margin-top': 'auto' }}>
                 <div className="card p-4" style={{ width: '400px' }}>
@@ -114,6 +123,11 @@ class SignupScreen extends React.Component {
                             </div>
                             <button type="submit" className="btn btn-primary w-100">Sign Up</button>
                         </form>
+
+						{signupErrorMessage.length > 0 &&
+							<p className="pt-2 text-danger">{signupErrorMessage}</p>
+						}
+
                         <p className="mt-3 text-center">
                             Already have an account? <a href="/login">Login here</a>
                         </p>
