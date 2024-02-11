@@ -1,6 +1,7 @@
 import psycopg2 as psql
 from psycopg2 import pool
 from datetime import datetime, timedelta
+import config
 
 # Schema of the table 'papers' in the PSQL database
 #
@@ -33,11 +34,11 @@ def convert_user_to_dict(user_data, include_password=False):
 connection_pool = pool.SimpleConnectionPool(
 	minconn=1,
 	maxconn=100,
-	user="postgres",
-	password="toor",
+	user=config.db_user,
+	password=config.db_pwd,
 	host="localhost",
 	port="5432",
-	database="rapidpapers_pgvector"
+	database=config.db_name
 )
 
 
