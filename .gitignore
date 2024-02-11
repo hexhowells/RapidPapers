@@ -10,7 +10,7 @@
 /coverage
 
 # production
-/build
+/client/build
 
 # misc
 .DS_Store
@@ -28,3 +28,4 @@ __pycache__
 *.pickle
 config.py
 /scripts
+/server/venv
