@@ -9,7 +9,7 @@ class LoginScreen extends React.Component {
     };
 
     handleButtonClick = (provider) => {
-        axios.get(`/authorise/${provider}`)
+        axios.get(`/api/v1/authorise/${provider}`)
             .then(response => {
                 window.location.href = response.data.redirect_url;
             })
@@ -40,7 +40,7 @@ class LoginScreen extends React.Component {
 		};
 
 		// Send the login request to the server
-		fetch('/login', requestOptions)
+		fetch('/api/v1/login', requestOptions)
 			.then(response => {
 				console.log(response)
 				window.location.href = response.url;

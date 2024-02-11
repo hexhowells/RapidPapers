@@ -12,7 +12,7 @@ const Header = () => {
 
 	// Checks if the user is authenticated
     useEffect(() => {
-        axios.get('/profile')
+        axios.get('/api/v1/profile')
             .then(response => {
                 setIsAuthenticated(true);
             })

@@ -8,7 +8,7 @@ const LibraryResult = (props) => {
 
     const bookmark = async (status) => {
         try {
-            await axios.post('/addpaper', { paper_id: item.id, status: status});
+            await axios.post('/api/v1/addpaper', { paper_id: item.id, status: status});
             props.onStatusChange();
         } catch (error) {
             console.error(error);
@@ -17,7 +17,7 @@ const LibraryResult = (props) => {
 
     const removeBookmark = async () => {
         try {
-            await axios.post('/removepaper', { paper_id: item.id });
+            await axios.post('/api/v1/removepaper', { paper_id: item.id });
             props.onStatusChange();
         } catch (error) {
             console.error(error);
