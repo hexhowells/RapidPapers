@@ -12,8 +12,6 @@
 # production
 /client/build
 
-/server/venv
-
 # misc
 .DS_Store
 .env.local
@@ -30,3 +28,4 @@ __pycache__
 *.pickle
 config.py
 /scripts
+/server/venv
