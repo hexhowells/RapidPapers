@@ -1,6 +1,6 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "RapidPapers",
+  "name": "RapidPapers - Explore AI papers",
   "icons": [
     {
       "src": "favicon.ico",
