@@ -17,7 +17,6 @@ List of features:
 - Save papers to a library for later reading
 - Track which papers you need to read, are currently reading, and have read
 
-## Example screenshot of the RapidPapers UI:
 <p align="center">
   <img src="https://github.com/hexhowells/RapidPapers/blob/master/example.png">
 </p>
