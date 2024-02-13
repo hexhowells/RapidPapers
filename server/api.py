@@ -147,7 +147,7 @@ def create_app():
 
 		access_token = create_access_token(identity=user.id, expires_delta=False)
 		res = make_response(redirect('https://rapidpapers.dev'))
-		res.set_cookie('access_token_cookie', access_token, samesite='Lax', domain='rapidpapers.dev')
+		res.set_cookie('access_token_cookie', access_token, samesite='Secure', httponly=True, secure=True, domain='.rapidpapers.dev')
 
 		return res
 
@@ -194,7 +194,7 @@ def create_app():
 
 		access_token = create_access_token(identity=user.id, expires_delta=False)
 		res = make_response(redirect('https://rapidpapers.dev'))
-		res.set_cookie('access_token_cookie', access_token, samesite='Lax', domain='rapidpapers.dev')
+		res.set_cookie('access_token_cookie', access_token, samesite='Strict', httponly=True, secure=True, domain='.rapidpapers.dev')
 
 		return res
 
@@ -301,7 +301,7 @@ def create_app():
 
 		access_token = create_access_token(identity=user.id, expires_delta=False)
 		res = make_response(redirect('http://127.0.0.1:9000/'))
-		res.set_cookie('access_token_cookie', access_token, secure=False, httponly=True, samesite='Lax', domain='127.0.0.1')
+		res.set_cookie('access_token_cookie', access_token, samesite='Strict', httponly=True, secure=True, domain='.rapidpapers.dev')
 
 		return res
 
