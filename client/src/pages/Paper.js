@@ -66,9 +66,16 @@ const Paper = () => {
 					<button className="btn btn-info mt-3 me-2">Find Similar</button>
 				</Link>
 
-				<button onClick={handleBookmark} className={`btn mt-3 ${isBookmarked ? 'btn-danger' : 'btn-primary'}`}>
+				<button onClick={handleBookmark} className={`btn mt-3 me-2 ${isBookmarked ? 'btn-danger' : 'btn-primary'}`}>
 				    {isBookmarked ? "Remove from Library" : "Add to Library"}
 				</button>
+
+				<a className="btn btn-primary btn-html mt-3" 
+					href={`https://ar5iv.org/abs/${paper.arxiv_id}`} 
+					target="_blank" rel="noopener noreferrer" 
+					role="button">
+					Read HTML
+				</a>
 			</div>
 
 		</div>

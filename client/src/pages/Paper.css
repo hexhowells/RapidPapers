@@ -20,6 +20,18 @@
 	color: white !important;
 }
 
+.btn-html {
+	background-color: #9c2ade !important;
+	border-color: #9c2ade !important;
+	color: white !important;
+}
+
+.btn-html:hover {
+	background-color: #8716c7 !important;
+	border-color: #8716c7 !important;
+	color: white !important;
+}
+
 .abstract {
 	color: black;
 }
