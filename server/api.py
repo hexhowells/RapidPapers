@@ -147,7 +147,7 @@ def create_app():
 
 		access_token = create_access_token(identity=user.id, expires_delta=False)
 		res = make_response(redirect('https://rapidpapers.dev'))
-		res.set_cookie('access_token_cookie', access_token, samesite='Secure', httponly=True, secure=True, domain='.rapidpapers.dev')
+		res.set_cookie('access_token_cookie', access_token, samesite='Strict', httponly=True, secure=True, domain='.rapidpapers.dev')
 
 		return res
 
