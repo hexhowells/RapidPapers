@@ -1,7 +1,8 @@
 import psycopg2 as psql
 from psycopg2 import pool
 from datetime import datetime, timedelta
-import config
+from dotenv import load_dotenv
+import os
 
 # Schema of the table 'papers' in the PSQL database
 #
@@ -31,16 +32,18 @@ def convert_user_to_dict(user_data, include_password=False):
 		return None
 		
 
+# Load environment variables from .env file
+load_dotenv()
+
 connection_pool = pool.SimpleConnectionPool(
 	minconn=1,
 	maxconn=100,
-	user=config.db_user,
-	password=config.db_pwd,
-	host="localhost",
-	port="5432",
-	database=config.db_name
+	user=os.getenv('DB_USER'),
+	password=os.getenv('DB_PWD'),
+	host=os.getenv('DB_HOST'),
+	port=os.getenv('DB_PORT'),
+	database=os.getenv('DB_NAME')
 )
-
 
 
 def fetch_paper(paper_id):

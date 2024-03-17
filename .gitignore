@@ -29,3 +29,6 @@ __pycache__
 config.py
 /scripts
 /server/venv
+
+# server
+.env

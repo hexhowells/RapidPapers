@@ -1,8 +1,8 @@
 import search
-import config
 import numpy as np
 import psql
 import utils
+import os
 
 from sentence_transformers import SentenceTransformer
 
@@ -47,6 +47,8 @@ from flask_login import (
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 
+from dotenv import load_dotenv
+
 
 def sort_papers(papers, sort_type):
 	match sort_type:
@@ -74,17 +76,28 @@ def create_app():
 		default_limits=["200 per day", "50 per hour"]
 	)
 
+	# Load environment variables from .env file
+	load_dotenv()
+
+	app.config['JWT_SECRET_KEY'] = os.getenv('JWT_SECRET_KEY')
+	app.config['DB_USER'] = os.getenv('DB_USER')
+	app.config['DB_PWD'] = os.getenv('DB_PWD')
+	app.config['REDIRECT_URL'] = os.getenv('REDIRECT_URL')
+	app.config['DOMAIN'] = os.getenv('DOMAIN')
+	app.config['HTTPS_COOKIE'] = os.getenv('HTTPS_COOKIE') == 'true'
+
 	app.config["JWT_TOKEN_LOCATION"] = ["cookies"]  # Enable JWT extraction from cookies
-	app.config["JWT_SECRET_KEY"] = config.jwt_secret_key
 	app.config["JWT_COOKIE_SECURE"] = True  # Use secure cookies for production (over HTTPS only)
 	app.config["JWT_COOKIE_CSRF_PROTECT"] = False
+	app.config['GOOGLE_CLIENT_ID'] = os.getenv('GOOGLE_CLIENT_ID')
+	app.config['GOOGLE_CLIENT_SECRET'] = os.getenv('GOOGLE_CLIENT_SECRET')
 
 	app.config['OAUTH2_PROVIDERS'] = {
 		# Google OAuth 2.0 documentation:
 		# https://developers.google.com/identity/protocols/oauth2/web-server#httprest
 		'google': {
-			'client_id': config.google_client_id,
-			'client_secret': config.google_client_secret,
+			'client_id': app.config['GOOGLE_CLIENT_ID'],
+			'client_secret': app.config['GOOGLE_CLIENT_SECRET'],
 			'authorize_url': 'https://accounts.google.com/o/oauth2/auth',
 			'token_url': 'https://accounts.google.com/o/oauth2/token',
 			'userinfo': {
@@ -146,8 +159,8 @@ def create_app():
 		user = User(id=user_data['id'], username=user_data['username'], email=user_data['email'])
 
 		access_token = create_access_token(identity=user.id, expires_delta=False)
-		res = make_response(redirect('https://rapidpapers.dev'))
-		res.set_cookie('access_token_cookie', access_token, samesite='Strict', httponly=True, secure=True, domain='.rapidpapers.dev')
+		res = make_response(redirect(app.config['REDIRECT_URL']))
+		res.set_cookie('access_token_cookie', access_token, samesite='Strict', httponly=True, secure=app.config['HTTPS_COOKIE'], domain=app.config['DOMAIN'])
 
 		return res
 
@@ -193,8 +206,8 @@ def create_app():
 		user = User(id=user_data['id'], username=user_data['username'], email=user_data['email'])
 
 		access_token = create_access_token(identity=user.id, expires_delta=False)
-		res = make_response(redirect('https://rapidpapers.dev'))
-		res.set_cookie('access_token_cookie', access_token, samesite='Strict', httponly=True, secure=True, domain='.rapidpapers.dev')
+		res = make_response(redirect(app.config['REDIRECT_URL']))
+		res.set_cookie('access_token_cookie', access_token, samesite='Strict', httponly=True, secure=app.config['HTTPS_COOKIE'], domain=app.config['DOMAIN'])
 
 		return res
 
@@ -300,8 +313,8 @@ def create_app():
 		user = User(id=user_data['id'], username=user_data['username'], email=user_data['email'])
 
 		access_token = create_access_token(identity=user.id, expires_delta=False)
-		res = make_response(redirect('http://127.0.0.1:9000/'))
-		res.set_cookie('access_token_cookie', access_token, samesite='Strict', httponly=True, secure=True, domain='.rapidpapers.dev')
+		res = make_response(redirect(app.config['REDIRECT_URL']))
+		res.set_cookie('access_token_cookie', access_token, samesite='Strict', httponly=True, secure=app.config['HTTPS_COOKIE'], domain=app.config['DOMAIN'])
 
 		return res
 
