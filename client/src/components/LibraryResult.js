@@ -1,6 +1,6 @@
 import {Link} from "react-router-dom";
 import axios from 'axios';
-import './Result.css'
+import './LibraryResult.css';
 
 
 const LibraryResult = (props) => {
@@ -25,35 +25,39 @@ const LibraryResult = (props) => {
     };
 
 	return (
-		<>
-		<li className="list-group-item pt-1 rounded" key={item.title}>
-			<div className="container-fluid">
-				<div className="row">
-					<div className="col-md-12">
-						<div className="row">
-							<div className="col-md-12 result-container py-3 px-1 border-bottom">
-							<Link className="nav-link paper-title" to={`/paper/${item.id}`} key={item.id}>
-								<h6 className="mb-1">{item.title}</h6>
-							</Link>
-								<p className="small-text date mb-1">{item.date}</p>
-								{item.status !== 'to read' && (
-									<button className="small-text pe-2 btn btn-primary btn-sm mx-1" onClick={() => bookmark('to read')}>Mark as to Read</button>
-								)}
-								{item.status !== 'read' && (
-									<button className="small-text pe-2 btn btn-primary btn-sm mx-1" onClick={() => bookmark('read')}>Mark as Read</button>
-								)}
-								{item.status !== 'currently reading' && (
-									<button className="small-text pe-2 btn btn-primary btn-sm mx-1" onClick={() => bookmark('currently reading')}>Mark as Reading</button>
-								)}
-								<button className="small-text pe-2 btn btn-danger btn-sm mx-1" onClick={removeBookmark}>Remove</button>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</li>
-		</>
-		);
-}
+    <>
+	    <li className="list-group-item pt-1 rounded" key={item.title}>
+	        <div className="container-fluid">
+		        <div className="row">
+		            <div className="col-md-12">
+			            <div className="row">
+			                <div className="col-md-12 result-container py-3 px-1 border-bottom d-flex justify-content-between align-items-center">
+				                <div>
+				                    <Link className="nav-link paper-title" to={`/paper/${item.id}`} key={item.id}>
+				                      <h6 className="mb-1">{item.title}</h6>
+				                    </Link>
+				                    <p className="small-text date mb-1">{item.date}</p>
+				                </div>
+			                  	<div className="dropdown">
+									<button className="btn library-btn" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+									    &#x22EE;
+									</button>
+									<ul className="dropdown-menu" aria-labelledby="dropdownMenuButton">
+									    <li><button className="dropdown-item" onClick={() => bookmark('to read')}>Mark as to Read</button></li>
+									    <li><button className="dropdown-item" onClick={() => bookmark('read')}>Mark as Read</button></li>
+									    <li><button className="dropdown-item" onClick={() => bookmark('currently reading')}>Mark as Reading</button></li>
+									    <li><hr className="dropdown-divider" /></li>
+									    <li><button className="dropdown-item text-danger" onClick={removeBookmark}>Remove</button></li>
+									</ul>
+								</div>
+			                </div>
+			            </div>
+		            </div>
+		        </div>
+	        </div>
+	    </li>
+	    </>
+	);
+};
 
 export default LibraryResult;
