@@ -43,9 +43,9 @@ const LibraryResult = (props) => {
 									    &#x22EE;
 									</button>
 									<ul className="dropdown-menu" aria-labelledby="dropdownMenuButton">
-									    <li><button className="dropdown-item" onClick={() => bookmark('to read')}>Mark as to Read</button></li>
-									    <li><button className="dropdown-item" onClick={() => bookmark('read')}>Mark as Read</button></li>
+									    <li><button className="dropdown-item" onClick={() => bookmark('to read')}>Mark as To Read</button></li>
 									    <li><button className="dropdown-item" onClick={() => bookmark('currently reading')}>Mark as Reading</button></li>
+									    <li><button className="dropdown-item" onClick={() => bookmark('read')}>Mark as Read</button></li>
 									    <li><hr className="dropdown-divider" /></li>
 									    <li><button className="dropdown-item text-danger" onClick={removeBookmark}>Remove</button></li>
 									</ul>
