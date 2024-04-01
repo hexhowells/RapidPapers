@@ -1,3 +1,30 @@
+/* Remove the default borders from the tabs */
+.nav-tabs {
+    border-bottom: none !important;
+}
+
+/* Style for non-active tabs */
+.nav-tabs .nav-link {
+    color: grey !important;
+    background-color: transparent !important;
+    border: none !important;
+    margin-right: 2px !important;
+}
+
+/* Style for the active tab */
+.nav-tabs .nav-link.active {
+    color: black !important; 
+    font-weight: bold !important;
+    border-bottom: 3px solid #026de0 !important;
+    background-color: transparent !important;
+}
+
+/* Style for hover effect on non-active tabs */
+.nav-tabs .nav-link:hover {
+    color: black !important;
+    background-color: transparent !important;
+}
+
 
 /* Changes for mobile */
 @media screen and (max-width: 600px) {
