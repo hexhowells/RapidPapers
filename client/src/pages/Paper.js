@@ -23,6 +23,10 @@ const Paper = () => {
         });
     }, [id]);
 
+	const authorList = paper.authors?.map((author) => author.replace(/\\/g, '')) || ["Anonymous"];
+  const displayedAuthors = authorList.length > 15 ? authorList.slice(0, 15).join(", ") : authorList.join(", ");
+  const additionalAuthors = authorList.length > 15 ? `+${authorList.length - 15} Authors` : '';
+
 
 	// Add / remove paper from library
 	const handleBookmark = async () => {
@@ -35,7 +39,14 @@ const Paper = () => {
 		<div className="container pt-2">
 			{/* Paper details */}
 			<h3>{paper.title}</h3>
-			<p className="mb-1"><i>{paper.authors?.map((author) => author.replace(/\\/g, '')).join(", ")}</i></p>
+			<i className="small-text">
+          {displayedAuthors}
+          {additionalAuthors && (
+              <span className="additional-authors">
+                  {additionalAuthors}
+              </span>
+          )}
+      </i>
 			<p>{paper.date}</p>
 			<br></br>
 			<p className="abstract">{paper.abstract}</p>

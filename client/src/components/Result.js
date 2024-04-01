@@ -3,6 +3,9 @@ import './Result.css'
 
 
 const Result = ({item, isAuthenticated}) => {
+	const authorList = item.authors?.map((author) => author.replace(/\\/g, '')) || ["Anonymous"];
+    const displayedAuthors = authorList.length > 15 ? authorList.slice(0, 15).join(", ") : authorList.join(", ");
+    const additionalAuthors = authorList.length > 15 ? `+${authorList.length - 15} Authors` : '';
 
 	return (
 		<>
@@ -16,10 +19,13 @@ const Result = ({item, isAuthenticated}) => {
 									<h5>{item.title}</h5>
 								</Link>
 								<i className="small-text">
-								  {item.authors
-								    ? item.authors.map((author) => author.replace(/\\/g, '')).join(", ")
-								    : "Anonymous"}
-								</i>
+                                    {displayedAuthors}
+                                    {additionalAuthors && (
+                                        <span className="additional-authors">
+                                            {additionalAuthors}
+                                        </span>
+                                    )}
+                                </i>
 
 								<p className="small-text date">{item.date}</p>
 
