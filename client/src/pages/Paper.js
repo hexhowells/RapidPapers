@@ -67,7 +67,7 @@ const Paper = () => {
 			<br></br>
 			{/* Paper action buttons */}
 			<div className="action-buttons">
-				<a className="btn btn-primary mt-3 me-2" 
+				<a className="btn btn-primary mt-3 me-2 btn-paper" 
 					href={`https://arxiv.org/abs/${paper.arxiv_id}`} 
 					target="_blank" rel="noopener noreferrer" 
 					role="button">
@@ -81,7 +81,7 @@ const Paper = () => {
 				    {isBookmarked ? "Remove from Library" : "Add to Library"}
 				</button>
 
-				<a className="btn btn-primary btn-html mt-3" 
+				<a className="btn btn-primary btn-html mt-3 me-2" 
 					href={`https://ar5iv.org/abs/${paper.arxiv_id}`} 
 					target="_blank" rel="noopener noreferrer" 
 					role="button">

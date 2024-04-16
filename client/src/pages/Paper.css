@@ -46,14 +46,22 @@
 
   .action-buttons a {
   	margin-right: 0px !important;
-	width: 180px;
-	padding-top: 9px;
-	padding-bottom: 9px;
+		width: 180px;
+  }
+
+  .btn-html {
+  	padding-top: 10px !important;
+  	padding-bottom: 10px !important;
+  }
+
+  .btn-paper {
+  	padding-top: 10px !important;
+  	padding-bottom: 10px !important;
   }
 
   .action-buttons button {
   	margin-right: 0px !important;
-	width: 180px;
-	height: 45px;
+	  width: 180px;
+	  height: 45px;
   }
 }
