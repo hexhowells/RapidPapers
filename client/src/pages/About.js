@@ -3,7 +3,7 @@ import './About.css'; // Assuming you have a CSS file for styling
 
 const About = () => {
     return (
-        <div className="about-container">
+        <div className="container">
             <h2 className="about-header">Welcome to RapidPapers</h2>
             <p className="about-intro">
                 RapidPapers is a website that aims to make the process of finding and organising machine learning
