@@ -2,14 +2,24 @@ import {Link} from "react-router-dom";
 import './Result.css'
 
 
-const Result = ({item, isAuthenticated}) => {
+const Result = ({item, index, highlightOriginal, isAuthenticated}) => {
 	const authorList = item.authors?.map((author) => author.replace(/\\/g, '')) || ["Anonymous"];
     const displayedAuthors = authorList.length > 15 ? authorList.slice(0, 15).join(", ") : authorList.join(", ");
     const additionalAuthors = authorList.length > 15 ? `+${authorList.length - 15} Authors` : '';
 
+	const isOriginal = highlightOriginal && (index === 0);
+
 	return (
 		<>
-		<li className="list-group-item pt-4 pb-4 mb-3 rounded" key={item.title}>
+		{isOriginal &&
+			<p className="small-text mb-1 ps-2 text-primary">
+				Original paper
+			</p>
+		}
+		<li 
+		className={`list-group-item pt-4 pb-4 mb-3 rounded ${isOriginal ? 'border border-primary' : ''}`} 
+		key={item.title}
+		>
 			<div className="container-fluid">
 				<div className="row">
 					<div className="col-md-11">

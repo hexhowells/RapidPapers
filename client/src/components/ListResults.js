@@ -4,7 +4,7 @@ import './ListResults.css';
 import Result from "./Result"
 
 
-const ListResults = (props) => {
+const ListResults = ({results, highlightOriginal=false}) => {
 	const [isAuthenticated, setIsAuthenticated] = useState(false);
 	
 	// Checks if user is authenticated
@@ -22,9 +22,14 @@ const ListResults = (props) => {
 	return (
 		<>
 		<ul className="list-group">
-			{!props.results ? null : props.results.map((item, index) => (
+			{!results ? null : results.map((item, index) => (
 				<>
-				<Result item={item} isAuthenticated={isAuthenticated}></Result>
+				<Result 
+				item={item} 
+				index={index} 
+				highlightOriginal={highlightOriginal}
+				isAuthenticated={isAuthenticated}
+				></Result>
 				</>
 			))}
 		</ul>

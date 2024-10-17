@@ -31,7 +31,7 @@ const Main = () => {
     <div>
       <div className="container">
         <HeaderResults setSortType={setSortType} setPageNum={setPageNum}></HeaderResults>
-        <ListResults results={results}></ListResults>
+        <ListResults results={results} highlightOriginal={true}></ListResults>
         <Pagination pageNum={pageNum} setPageNum={setPageNum} numPages={numPages}></Pagination>
       </div>
     </div>
