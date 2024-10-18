@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import './ListResults.css';
-import Result from "./Result"
+import Result from "./Result";
+import { BarLoader } from 'react-spinners';
 
 
-const ListResults = ({results, highlightOriginal=false}) => {
+const ListResults = ({results, loading=false, highlightOriginal=false}) => {
 	const [isAuthenticated, setIsAuthenticated] = useState(false);
 	
 	// Checks if user is authenticated
@@ -21,18 +22,24 @@ const ListResults = ({results, highlightOriginal=false}) => {
 
 	return (
 		<>
-		<ul className="list-group">
-			{!results ? null : results.map((item, index) => (
-				<>
-				<Result 
-				item={item} 
-				index={index} 
-				highlightOriginal={highlightOriginal}
-				isAuthenticated={isAuthenticated}
-				></Result>
-				</>
-			))}
-		</ul>
+		{loading ? (
+			<div className="d-flex justify-content-center align-items-center py-5">
+				<BarLoader color={'#014e8c'} size={12} width={600} loading={loading} />
+			</div>
+		) : (
+			<ul className="list-group">
+				{!results ? null : results.map((item, index) => (
+					<>
+					<Result 
+					item={item} 
+					index={index} 
+					highlightOriginal={highlightOriginal}
+					isAuthenticated={isAuthenticated}
+					></Result>
+					</>
+				))}
+			</ul>
+		)}
 		</>
 		);
 }

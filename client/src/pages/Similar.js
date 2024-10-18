@@ -12,9 +12,11 @@ const Main = () => {
 	const [sortType, setSortType] = useState('relevant');
 	const [pageNum, setPageNum] = useState(1);
 	const [numPages, setNumPages] = useState(100);
+	const [loading, setLoading] = useState(false);
 	
 	// Fetch the number of pages and results
     useEffect(() => {
+	setLoading(true);
       fetch(`/api/v1/similar?id=${id}&sort=${sortType}&page=${pageNum}`)
         .then((res) => res.json())
         .then((data) => {
@@ -23,7 +25,10 @@ const Main = () => {
         })
         .catch((error) => {
           console.error('Error fetching data from backend:', error);
-        });
+        })
+		.finally(() => {
+			setLoading(false);
+		});
     }, [id, sortType, pageNum]);
 
   return (
@@ -31,8 +36,10 @@ const Main = () => {
     <div>
       <div className="container">
         <HeaderResults setSortType={setSortType} setPageNum={setPageNum}></HeaderResults>
-        <ListResults results={results} highlightOriginal={true}></ListResults>
-        <Pagination pageNum={pageNum} setPageNum={setPageNum} numPages={numPages}></Pagination>
+        <ListResults results={results} loading={loading} highlightOriginal={true}></ListResults>
+        {!loading && (
+			<Pagination pageNum={pageNum} setPageNum={setPageNum} numPages={numPages}></Pagination>
+		)}
       </div>
     </div>
     </>
