@@ -24,7 +24,12 @@ const ListResults = ({results, loading=false, highlightOriginal=false}) => {
 		<>
 		{loading ? (
 			<div className="d-flex justify-content-center align-items-center py-5">
-				<BarLoader color={'#014e8c'} size={12} width={600} loading={loading} />
+				<BarLoader 
+					color={'#014e8c'} 
+					size={12} 
+					width={window.innerWidth < 768 ? 250 : 600} 
+					loading={loading}
+				/>
 			</div>
 		) : (
 			<ul className="list-group">
