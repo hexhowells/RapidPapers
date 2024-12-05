@@ -47,6 +47,11 @@ const About = () => {
 
 				<br></br>
 
+				<h4>Donate</h4>
+				<p>If you want to help support the development and hosting of this site, consider donating via <a href="https://www.paypal.com/donate/?hosted_button_id=ZJ3DKEBXM7H3G">PayPal</a>.</p>
+
+				<br></br>
+
 				<h4>Similar Sites</h4>
 				<p>Since the inception and creation of this website various similar projects of varying scale have been created (as well as some existing prior). Here is a list of similar websites that you might find interesting/useful:</p>
 				<ul className="about-list">
