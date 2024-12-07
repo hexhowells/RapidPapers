@@ -61,10 +61,9 @@ def sort_papers(papers, sort_type):
 
 
 class User(UserMixin):
-		def __init__(self, id, username, email):
+		def __init__(self, id, username):
 			self.id = id
 			self.username = username
-			self.email = email
 
 
 def create_app():
@@ -172,7 +171,7 @@ def create_app():
 		Login to the site
 		
 		Requires:
-			- username/email: string
+			- username: string
 			- password: string
 		"""
 		user = request.json['user']
@@ -180,7 +179,7 @@ def create_app():
 
 		# Error checking
 		if not user:
-			return jsonify({'error:' 'missing username/email field'}), 400
+			return jsonify({'error:' 'missing username field'}), 400
 
 		if not password:
 			return jsonify({'error:' 'missing password field'}), 400
@@ -193,17 +192,14 @@ def create_app():
 		if user_data := psql.get_user_from_username(user):
 			if check_password_hash(user_data['password_hash'], password):
 				authorise = True
-		elif user_data := psql.get_user_from_email(user):
-			if check_password_hash(user_data['password_hash'], password):
-				authorise = True
 		else:
-			return jsonify({'error': 'username or email does not exist'}), 404
+			return jsonify({'error': 'username does not exist'}), 404
 
 		if not authorise:
 			return jsonify({'error': 'incorrect credentials'}), 401
 
 		# Create user credentials
-		user = User(id=user_data['id'], username=user_data['username'], email=user_data['email'])
+		user = User(id=user_data['id'], username=user_data['username'])
 
 		access_token = create_access_token(identity=user.id, expires_delta=False)
 		res = make_response(redirect(app.config['REDIRECT_URL']))
