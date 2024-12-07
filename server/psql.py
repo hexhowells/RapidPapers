@@ -22,10 +22,9 @@ def convert_user_to_dict(user_data, include_password=False):
 		user_dict = {
 			'id': user_data[0], 
 			'username': user_data[1], 
-			'email': user_data[2], 
 		}
 		if include_password:
-			user_dict['password_hash'] = user_data[4]
+			user_dict['password_hash'] = user_data[3]
 
 		return user_dict
 	else:
@@ -100,34 +99,6 @@ def fetch_all(num_results, page):
 		connection_pool.putconn(conn)
 
 
-def get_user_from_email(email):
-	"""
-	Get user details given their email
-
-	Args
-		email: string
-
-	Return
-		Dict{string: string}
-	"""
-	conn = connection_pool.getconn()
-
-	try:
-		with conn.cursor() as cursor:
-			cursor.execute(
-				"SELECT * \
-				FROM users \
-				WHERE email = %s",
-				[email]
-				)
-			user_data = cursor.fetchone()
-			return convert_user_to_dict(user_data, include_password=True)
-	except Exception as e:
-		print("An error occurred:", e)
-	finally:
-		connection_pool.putconn(conn)
-
-
 def get_user_from_username(username):
 	"""
 	Get user details given their username
@@ -184,13 +155,12 @@ def get_user(user_id):
 		connection_pool.putconn(conn)
 
 
-def create_user(username, email, password_hash=None):
+def create_user(username, password_hash=None):
 	"""
 	Create a new user account
 
 	Args
 		username: string
-		email: string
 		password_hash: string
 
 	Return
@@ -200,8 +170,8 @@ def create_user(username, email, password_hash=None):
 	
 	try:
 		# Prepare the basic insert statement and values
-		insert_query = "INSERT INTO users (username, email"
-		values = [username, email]
+		insert_query = "INSERT INTO users (username"
+		values = [username]
 
 		# Add password_hash to the query and values if it's provided
 		if password_hash:
@@ -209,10 +179,10 @@ def create_user(username, email, password_hash=None):
 			values.append(password_hash)
 
 		# Finalize the query
-		insert_query += ") VALUES (%s, %s"
+		insert_query += ") VALUES (%s"
 		if password_hash:
 			insert_query += ", %s"
-		insert_query += ") RETURNING id, username, email"
+		insert_query += ") RETURNING id, username"
 
 		with conn.cursor() as cursor:
 			# Execute the query

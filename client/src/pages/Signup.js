@@ -2,7 +2,6 @@ import React from 'react';
 
 class SignupScreen extends React.Component {
     state = {
-        email: '',
         username: '',
         password: '',
         confirmPassword: '',
@@ -39,7 +38,6 @@ class SignupScreen extends React.Component {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-                email: this.state.email,
                 username: this.state.username,
                 password: this.state.password
             })
@@ -70,18 +68,6 @@ class SignupScreen extends React.Component {
                     <div className="card-body">
                         <h2 className="card-title text-center mb-4">Sign Up</h2>
                         <form onSubmit={this.handleSubmit}>
-                            <div className="form-group mb-3">
-                                <label htmlFor="email">Email</label>
-                                <input 
-                                    type="email" 
-                                    className="form-control" 
-                                    id="email" 
-                                    name="email" 
-                                    value={this.state.email} 
-                                    onChange={this.handleInputChange} 
-                                    required
-                                />
-                            </div>
                             <div className="form-group mb-3">
                                 <label htmlFor="username">Username</label>
                                 <input 

@@ -120,19 +120,14 @@ def create_app():
 		
 		Requires
 			- username: string
-			- email: string
 			- password: string, (len >= 12)
 		"""
 		username = request.json['username']
-		email = request.json['email']
 		password = request.json['password']
 
 		# Error checking
 		if not username:
 			return jsonify({'error:' 'missing username field'}), 400
-
-		if not email:
-			return jsonify({'error:' 'missing email field'}), 400
 
 		if not password:
 			return jsonify({'error:' 'missing password field'}), 400
@@ -144,18 +139,15 @@ def create_app():
 		if psql.get_user_from_username(username):
 			return jsonify({'error': 'username already exists'}), 409
 
-		if psql.get_user_from_email(email):
-			return jsonify({'error:' 'email already registered to an account'}), 409
-
 		# Create new account
 		password_hash = generate_password_hash(password)
 
-		user_data = psql.create_user(username=username, email=email, password_hash=password_hash)
+		user_data = psql.create_user(username=username, password_hash=password_hash)
 		if not user_data: 
 			print("Error: Create new account not successful")
 			abort(401)
 		
-		user = User(id=user_data['id'], username=user_data['username'], email=user_data['email'])
+		user = User(id=user_data['id'], username=user_data['username'])
 
 		access_token = create_access_token(identity=user.id, expires_delta=False)
 		res = make_response(redirect(app.config['REDIRECT_URL']))
