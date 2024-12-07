@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import React from 'react';
 import axios from 'axios';
 import './Login.css';
 
 class LoginScreen extends React.Component {
     state = {
-        email: '',
+        username: '',
         password: '',
 		loginError: false
     };
@@ -27,15 +27,15 @@ class LoginScreen extends React.Component {
 
     handleSubmit = (e) => {
 		e.preventDefault();
-		// Extract email and password from the state
-		const { email, password } = this.state;
+		// Extract username and password from the state
+		const { username, password } = this.state;
 
 		// Setup the request options and body
 		const requestOptions = {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
 			body: JSON.stringify({
-				user: email,
+				user: username,
 				password: password
 			})
 		};
@@ -56,7 +56,6 @@ class LoginScreen extends React.Component {
 	};
 
     render() {
-		const { usr, pwd, loginError } = this.state;
         return (
             <div className="container d-flex justify-content-center align-items-center" style={{ 'margin-top': 'auto' }}>
                 <div className="card p-4" style={{ width: '400px' }}>
@@ -64,13 +63,13 @@ class LoginScreen extends React.Component {
                         <h2 className="card-title text-center mb-4">Login</h2>
                         <form onSubmit={this.handleSubmit}>
                             <div className="form-group mb-3">
-                                <label htmlFor="email">Email/Username</label>
+                                <label htmlFor="username">Username</label>
                                 <input 
                                     type="text" 
                                     className="form-control" 
-                                    id="email" 
-                                    name="email" 
-                                    value={this.state.email} 
+                                    id="username" 
+                                    name="username" 
+                                    value={this.state.username} 
                                     onChange={this.handleInputChange} 
                                     required
                                 />
@@ -90,7 +89,7 @@ class LoginScreen extends React.Component {
                             <button type="submit" className="btn btn-primary w-100">Login</button>
                         </form>
 
-						{loginError &&
+						{this.state.loginError &&
 							<p className="pt-2 text-danger">Username or password is incorrect</p>
 						}
 
