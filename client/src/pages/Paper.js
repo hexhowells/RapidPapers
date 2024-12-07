@@ -1,5 +1,6 @@
 import { useParams, Link } from "react-router-dom";
 import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 
 import { bookmark } from '../utilities/bookmarkUtils';
 
@@ -8,7 +9,19 @@ import './Paper.css';
 const Paper = () => {
 	const { id } = useParams();
 	const [paper, setPaper] = useState(0);
-	const [isBookmarked, setIsBookmarked] = useState(false); 
+	const [isBookmarked, setIsBookmarked] = useState(false);
+	const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+	// Checks if the user is authenticated
+    useEffect(() => {
+        axios.get('/api/v1/profile')
+            .then(response => {
+                setIsAuthenticated(true);
+            })
+            .catch(error => {
+                setIsAuthenticated(false);
+            });
+    }, []);
 
 	// Fetch user data for paper
 	useEffect(() => {
@@ -77,9 +90,11 @@ const Paper = () => {
 					<button className="btn btn-info mt-3 me-2">Find Similar</button>
 				</Link>
 
-				<button onClick={handleBookmark} className={`btn mt-3 me-2 ${isBookmarked ? 'btn-danger' : 'btn-primary'}`}>
-				    {isBookmarked ? "Remove from Library" : "Add to Library"}
-				</button>
+				{isAuthenticated &&
+					<button onClick={handleBookmark} className={`btn mt-3 me-2 ${isBookmarked ? 'btn-danger' : 'btn-primary'}`}>
+					    {isBookmarked ? "Remove from Library" : "Add to Library"}
+					</button>
+				}
 
 				<a className="btn btn-primary btn-html mt-3 me-2" 
 					href={`https://ar5iv.org/abs/${paper.arxiv_id}`} 
