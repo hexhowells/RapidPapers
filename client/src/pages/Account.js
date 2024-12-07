@@ -114,7 +114,6 @@ const Account = () => {
 					<div className="account-details">
 						<h3 className="account-heading">Account Details</h3>
 						<p>Username: {user.username}</p>
-						<p>Email Address: {user.email}</p>
 						<button className="btn btn-primary mt-4" onClick={handleLogout}>Logout</button>
 						
 						<h3 className="pt-5 pb-2">Change Password</h3>
