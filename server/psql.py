@@ -21,7 +21,8 @@ def convert_user_to_dict(user_data, include_password=False):
 	if user_data:
 		user_dict = {
 			'id': user_data[0], 
-			'username': user_data[1], 
+			'username': user_data[1],
+			'date_created': user_data[2],
 		}
 		if include_password:
 			user_dict['password_hash'] = user_data[3]
