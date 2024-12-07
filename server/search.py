@@ -19,9 +19,19 @@ def search_paper(user_id, results):
 
 def fetch_paper(user_id, paper_id):
 	if user_id:
-		return utils.paper_to_dict( psql.fetch_paper_details(user_id, paper_id) )
+		paper = psql.fetch_paper_details(user_id, paper_id)
 	else:
-		return utils.paper_to_dict( psql.fetch_paper(paper_id)[0] )
+		paper = psql.fetch_paper(paper_id)
+
+		if len(paper) > 0:
+			paper = paper[0]
+		else:
+			paper = None
+
+	if paper is not None:
+		return utils.paper_to_dict( paper )
+	else:
+		return None
 
 
 def get_most_recent(user_id, num_results, page_num):

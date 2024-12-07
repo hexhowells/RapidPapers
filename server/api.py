@@ -619,7 +619,11 @@ def create_app():
 		user_id = get_jwt_identity()
 		paper_id = request.args.get('id')
 
-		return search.fetch_paper(user_id, paper_id)
+		paper = search.fetch_paper(user_id, paper_id)
+		if paper is not None:
+			return paper
+		else:
+			return make_response('Paper ID not found', 404)
 
 
 	return app
