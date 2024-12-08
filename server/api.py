@@ -150,7 +150,7 @@ def create_app():
 		user = User(id=user_data['id'], username=user_data['username'])
 
 		access_token = create_access_token(identity=user.id, expires_delta=False)
-		res = make_response(redirect(app.config['REDIRECT_URL']))
+		res = make_response('Response')
 		res.set_cookie('access_token_cookie', access_token, samesite='Strict', httponly=True, secure=app.config['HTTPS_COOKIE'], domain=app.config['DOMAIN'])
 
 		return res
@@ -194,7 +194,7 @@ def create_app():
 		user = User(id=user_data['id'], username=user_data['username'])
 
 		access_token = create_access_token(identity=user.id, expires_delta=False)
-		res = make_response(redirect(app.config['REDIRECT_URL']))
+		res = make_response('Response')
 		res.set_cookie('access_token_cookie', access_token, samesite='Strict', httponly=True, secure=app.config['HTTPS_COOKIE'], domain=app.config['DOMAIN'])
 
 		return res

@@ -29,7 +29,7 @@ const LoginScreen = () => {
         fetch('/api/v1/login', requestOptions)
             .then((response) => {
                 if (response.status === 200) {
-                    window.location.href = response.url;
+                    window.location.href = '/';
                 } else {
                     setLoginError(true);
                     console.log('Login failed');

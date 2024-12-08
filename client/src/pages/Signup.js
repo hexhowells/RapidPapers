@@ -47,7 +47,7 @@ class SignupScreen extends React.Component {
         fetch('/api/v1/create_account', requestOptions)
             .then(response => {
 				if (response.ok) {
-                	window.location.href = response.url;
+                	window.location.href = '/';
 				} else {
 					response.json().then(error => {
 						this.setState(prevState => ({...prevState, signupErrorMessage: error.error}));
