@@ -5,14 +5,34 @@ import utils
 import re
 
 
+def _arxiv_id(string):
+    """
+    Check if a string is in the form of an arXiv ID with optional 'arXiv:' prefix.
+    
+    Args:
+        string (str): The input string to check.
+    
+    Returns:
+        bool: True if the string matches the simplified arXiv ID format, False otherwise.
+    """
+    arxiv_pattern = re.compile(
+        r'^(arXiv:)?\d{4}\.\d{5}(v\d+)?$',
+        re.IGNORECASE
+    )
+    return bool(arxiv_pattern.match(string))
+
+
 def _exact_search_query(query):
 	pattern = r'^\s*([\'"]).*\1\s*$'  # check for double or single quotes surrounding the query
 	return bool(re.match(pattern, query))
 
 
 def search_papers(query, model, sort_type, results_per_page, page_num):
-	if _exact_search_query(query):
-		print("Exact string search detected")
+	if _arxiv_id(query):
+		results = psql.arxiv_search(query, sort_type, results_per_page, page_num)
+		results = [utils.paper_to_dict(paper) for paper in results]
+		num_found = len(results)
+	elif _exact_search_query(query):
 		query = query[1:-1]  # remove quotes from search query
 		results = psql.string_search(query, sort_type, results_per_page, page_num)
 		results = [utils.paper_to_dict(paper) for paper in results]

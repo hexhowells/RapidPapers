@@ -3,6 +3,7 @@ from psycopg2 import pool
 from datetime import datetime, timedelta
 from dotenv import load_dotenv
 import os
+import re
 
 # Schema of the table 'papers' in the PSQL database
 #
@@ -550,6 +551,67 @@ def string_search(query_string, order='relevant', num_results=50, page=1, days_b
             conn.commit()
 
             return results
+    except Exception as e:
+        print("An error occurred:", e)
+        return []
+    finally:
+        connection_pool.putconn(conn)
+
+
+def arxiv_search(query_string, order='relevant', num_results=50, page=1, days_back=None):
+    """
+    Perform exact string search for a substring in the title or abstract columns,
+    and extract normalized arXiv IDs from the results.
+
+    Args:
+        query_string: string
+        order: string (Default='relevant', can be 'asc' or 'desc')
+        num_results: int (Default=50)
+        page: int (Default=1)
+        days_back: int (Default=None)
+
+    Return:
+        List[dict]: List of dictionaries, where each dictionary contains the normalized arXiv ID and other fields.
+    """
+    conn = connection_pool.getconn()
+
+    try:
+        if days_back:
+            date_threshold = datetime.now() - timedelta(days=days_back)
+        else:
+            date_threshold = datetime(1999, 1, 1)
+
+        # Normalize the query string: Remove 'arXiv:' prefix and dot
+        normalized_query = re.sub(r'^arXiv:', '', query_string, flags=re.IGNORECASE)
+        normalized_query = normalized_query.replace('.', '')
+
+        # SQL query to perform exact matching on the normalized arXiv ID
+        query = """
+            SELECT *
+            FROM papers
+            WHERE publish_date >= %s
+            AND (REPLACE(LOWER(arxiv_id), '.', '') = %s)
+            """
+
+        params = [date_threshold, normalized_query]
+
+        # Add ordering if specified
+        if order.lower() == 'asc':
+            query += " ORDER BY publish_date ASC"
+        elif order.lower() == 'desc':
+            query += " ORDER BY publish_date DESC"
+
+        # Add limit and offset for pagination
+        query += " LIMIT %s OFFSET %s"
+        params.extend([num_results, (page - 1) * num_results])
+
+        with conn.cursor() as cursor:
+            cursor.execute(query, params)
+            results = cursor.fetchall()
+            conn.commit()
+
+            return results
+
     except Exception as e:
         print("An error occurred:", e)
         return []
