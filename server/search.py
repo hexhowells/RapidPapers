@@ -5,6 +5,7 @@ import utils
 
 
 def search_paper(user_id, results):
+	""" Function not currently in use, likely legacy and can probably be deleted """
 	if user_id:
 		papers = [psql.fetch_paper_details(user_id, str(result)) for result in results]
 	else:
@@ -18,6 +19,15 @@ def search_paper(user_id, results):
 
 
 def fetch_paper(user_id, paper_id):
+	""" Fetch the details of a paper given its ID
+
+	Args:
+		user_id (string): ID for the user if they are logged in
+		paper_id (string): ID for the paper to fetch
+
+	Returns:
+		(dict): dictionary containing the details of the paper
+	"""
 	if user_id:
 		paper = psql.fetch_paper_details(user_id, paper_id)
 	else:
@@ -35,6 +45,16 @@ def fetch_paper(user_id, paper_id):
 
 
 def get_most_recent(user_id, num_results, page_num):
+	""" Gets the most recent papers from the database
+
+	Args:
+		user_id (string): ID for the user if they are logged in
+		num_results (int): number of results to show
+		page_num (int): current page number
+
+	Returns:
+		List[dict]: list of dictionaries containing the details of the papers
+	"""
 	if user_id:
 		papers = psql.fetch_all_details(user_id, num_results, page_num)
 	else:
