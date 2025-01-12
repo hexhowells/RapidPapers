@@ -4,20 +4,6 @@ import psql
 import utils
 
 
-def search_paper(user_id, results):
-	""" Function not currently in use, likely legacy and can probably be deleted """
-	if user_id:
-		papers = [psql.fetch_paper_details(user_id, str(result)) for result in results]
-	else:
-		papers = [psql.fetch_paper(str(result))[0] for result in results]
-	
-	papers_dict = []
-	for paper in papers:
-		papers_dict.append(utils.paper_to_dict(paper))
-
-	return papers_dict
-
-
 def fetch_paper(user_id, paper_id):
 	""" Fetch the details of a paper given its ID
 
