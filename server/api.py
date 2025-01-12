@@ -496,8 +496,7 @@ def create_app():
 		query = request.args.get('query')
 
 		results_per_page = request.args.get('num_results')
-		results_per_page = results_per_page if (
-			results_per_page != None) else 25
+		results_per_page = results_per_page if (results_per_page != None) else 25
 
 		sort_type = request.args.get('sort')
 		sort_type = sort_type if (sort_type != None) else 'relevant'
@@ -506,14 +505,7 @@ def create_app():
 		page_num = int(page_num) if (page_num != None) else 1
 
 		if query != None:
-			# get embedding of the users query
-			query_embedding = model.encode(query)
-			embedding_str = str(list(query_embedding))
-
-			# perform vector search to get the results
-			results = psql.vector_search(embedding_str, sort_type, results_per_page, page_num, threshold=1.2)
-			results = [utils.paper_to_dict(paper) for paper in results]
-			num_found = len(results)
+			results, num_found = search.search_papers(query, model, sort_type, results_per_page, page_num)
 		else:
 			# User supplied no query, get the top N papers instead
 			num_found = results_per_page * 100

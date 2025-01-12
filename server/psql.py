@@ -497,4 +497,61 @@ def vector_search(embedding_str, order='relevant', num_results=50, page=1, thres
 		print("An error occurred:", e)
 	finally:
 		connection_pool.putconn(conn)
-		
+
+
+def string_search(query_string, order='relevant', num_results=50, page=1, days_back=None):
+    """
+    Perform exact string search for a substring in the title or abstract columns.
+
+    Args:
+        query_string: string
+        order: string (Default='relevant', can be 'asc' or 'desc')
+        num_results: int (Default=50)
+        page: int (Default=1)
+        days_back: int (Default=None)
+
+    Return:
+        List[string]
+    """
+    conn = connection_pool.getconn()
+
+    try:
+        if days_back:
+            date_threshold = datetime.now() - timedelta(days=days_back)
+        else:
+            date_threshold = datetime(1999, 1, 1)
+
+        # Format the query string to include wildcards on both sides if not already present
+        query_string = f"%{query_string.strip('%')}%"
+
+        # SQL query to perform substring matching in title or abstract columns
+        query = """
+            SELECT *
+            FROM papers
+            WHERE publish_date >= %s
+            AND (LOWER(title) LIKE %s OR LOWER(abstract) LIKE %s)
+            """
+
+        params = [date_threshold, query_string, query_string]
+
+        # Add ordering if specified
+        if order.lower() == 'asc':
+            query += " ORDER BY publish_date ASC"
+        elif order.lower() == 'desc':
+            query += " ORDER BY publish_date DESC"
+
+        # Add limit and offset for pagination
+        query += " LIMIT %s OFFSET %s"
+        params.extend([num_results, (page - 1) * num_results])
+
+        with conn.cursor() as cursor:
+            cursor.execute(query, params)
+            results = cursor.fetchall()
+            conn.commit()
+
+            return results
+    except Exception as e:
+        print("An error occurred:", e)
+        return []
+    finally:
+        connection_pool.putconn(conn)
