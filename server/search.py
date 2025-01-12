@@ -5,29 +5,48 @@ import utils
 import re
 
 
-def _arxiv_id(string):
-    """
-    Check if a string is in the form of an arXiv ID with optional 'arXiv:' prefix.
+def _arxiv_id(query):
+    """ Check if query is in the form of an arXiv ID with optional 'arXiv:' prefix.
     
     Args:
-        string (str): The input string to check.
+        query (string): The input query to check.
     
     Returns:
-        bool: True if the string matches the simplified arXiv ID format, False otherwise.
+        bool: True if the query matches the simplified arXiv ID format, False otherwise.
     """
     arxiv_pattern = re.compile(
         r'^(arXiv:)?\d{4}\.\d{5}(v\d+)?$',
         re.IGNORECASE
     )
-    return bool(arxiv_pattern.match(string))
+    return bool(arxiv_pattern.match(query))
 
 
 def _exact_search_query(query):
-	pattern = r'^\s*([\'"]).*\1\s*$'  # check for double or single quotes surrounding the query
+	""" Check if query is surrounded by single or double quotes
+
+	Args:
+		query (string): The input query to check
+
+	Returns:
+		bool: True if the query is surrounded by single/double quotes, False otherwise.
+	"""
+	pattern = r'^\s*([\'"]).*\1\s*$'
 	return bool(re.match(pattern, query))
 
 
 def search_papers(query, model, sort_type, results_per_page, page_num):
+	""" Execute a search query for papers on the database
+	
+	Args:
+		query (string): the user-supplied search query
+		model (Transformer): the model used to encode the query
+		sort_type (string): how to sort the search results
+		results_per_page (int): how many results to return per page
+		page_num (int): the current page number in the search
+
+	Returns:
+		list[dict]: list of dictionaries containing the details of the papers
+	"""
 	if _arxiv_id(query):
 		results = psql.arxiv_search(query, sort_type, results_per_page, page_num)
 		results = [utils.paper_to_dict(paper) for paper in results]
