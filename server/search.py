@@ -28,15 +28,12 @@ def fetch_paper(user_id, paper_id):
 	Returns:
 		(dict): dictionary containing the details of the paper
 	"""
-	if user_id:
-		paper = psql.fetch_paper_details(user_id, paper_id)
-	else:
-		paper = psql.fetch_paper(paper_id)
+	paper = psql.fetch_paper(paper_id)
 
-		if len(paper) > 0:
-			paper = paper[0]
-		else:
-			paper = None
+	if len(paper) > 0:
+		paper = paper[0]
+	else:
+		paper = None
 
 	if paper is not None:
 		return utils.paper_to_dict( paper )
@@ -55,10 +52,7 @@ def get_most_recent(user_id, num_results, page_num):
 	Returns:
 		List[dict]: list of dictionaries containing the details of the papers
 	"""
-	if user_id:
-		papers = psql.fetch_all_details(user_id, num_results, page_num)
-	else:
-		papers = psql.fetch_all(num_results, page_num)
+	papers = psql.fetch_all(num_results, page_num)
 	
 	papers_dict = []
 	for paper in papers:
