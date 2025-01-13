@@ -4,7 +4,7 @@
 
 ### Find and organise the world's AI research papers.
 
-#### Live at: https://www.rapidpapers.dev
+#### Live at: https://www.rapidpapers.org
 
 ---
 
