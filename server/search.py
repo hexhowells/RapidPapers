@@ -53,7 +53,7 @@ def search_papers(query, model, sort_type, results_per_page, page_num):
 		num_found = len(results)
 	elif _exact_search_query(query):
 		query = query[1:-1]  # remove quotes from search query
-		results = psql.string_search(query, sort_type, results_per_page, page_num)
+		results = psql.string_search(query.lower(), sort_type, results_per_page, page_num)
 		results = [utils.paper_to_dict(paper) for paper in results]
 		num_found = len(results)
 	else:
