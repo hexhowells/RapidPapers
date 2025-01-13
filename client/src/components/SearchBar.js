@@ -27,7 +27,7 @@ const SearchBar = ({ setSearchQuery, setPageNum }) => {
 	  				onChange={handleInputChange}
 	  				id="searchform" 
 	  				className="form-control rounded-2" 
-	  				placeholder="Search a paper" 
+	  				placeholder='Search a paper - (e.g. Code generation, "Attention is all you need", 1712.01815)'
 	  				aria-label="Search"/>
 	  			</form>
 			</div>
