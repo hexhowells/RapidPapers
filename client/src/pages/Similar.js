@@ -36,7 +36,7 @@ const Main = () => {
     <div>
       <div className="container">
         <HeaderResults setSortType={setSortType} setPageNum={setPageNum}></HeaderResults>
-        <ListResults results={results} loading={loading} highlightOriginal={true}></ListResults>
+        <ListResults results={results} loading={loading} highlightOriginal={true && (pageNum===1)}></ListResults>
         {!loading && (
 			<Pagination pageNum={pageNum} setPageNum={setPageNum} numPages={numPages}></Pagination>
 		)}
