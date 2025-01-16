@@ -15,7 +15,7 @@ const About = () => {
 				<p>There are three main problems to solve to make RapidPapers a good resource for ingesting research papers.</p>
 
 				<h4>Search</h4>
-				<p>Powerful search enables papers to be found fast and easy. This should include the ability to filter search results based on: author, category, organisation, date, etc. This also includes the recommendation engine which should produce tailored recommendations for you with a high signal-to-noise ratio.</p>
+				<p>Powerful search enables papers to be found fast and easy. This should include the ability to filter search results based on: author, category, organisation, date, etc. This also includes the recommendation engine which should produce tailored recommendations for you with a high signal-to-noise ratio. We have also now developed <a href="https://github.com/hexhowells/RapidLink-for-arXiv">RapidLink</a>, a Chrome extension to quickly find papers in RapidPapers from an Arxiv paper page.</p>
 
 				<h4>Organisation</h4>
 				<p>There are a lot of papers you may want to read or have already read. Organising these papers so they are easy to find and track is important. This involves categorising the user's library (either manually or automatically). The ability to search the library and filter/sort results is equally valuable. An organised library is an organised mind.</p>
