@@ -11,7 +11,7 @@
 Rapidpapers aims to make the process of finding and organising AI research papers hosted on Arxiv simple. There are around 200+ AI related research papers posted to Arxiv every day, can you sift through them all?
 
 List of features:
-- Text search through all papers in the DB
+- Text search through all AI-related papers on Arxiv
 - Find papers similar to any given paper
 - Get daily paper recommendations tailored to your interests
 - Save papers to a library for later reading
@@ -26,7 +26,6 @@ List of features:
 ### Future improvements
 
 #### Search
-- Exact string search
 - Search by author
 - Search by Arxiv ID
 - Search by AI generated categories
