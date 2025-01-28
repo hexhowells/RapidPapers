@@ -590,7 +590,7 @@ def arxiv_search(query_string, order='relevant', num_results=50, page=1, days_ba
             SELECT *
             FROM papers
             WHERE publish_date >= %s
-            AND (REPLACE(LOWER(arxiv_id), '.', '') = %s)
+            AND id = %s
             """
 
         params = [date_threshold, normalized_query]
