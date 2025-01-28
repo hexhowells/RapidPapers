@@ -70,6 +70,42 @@ def fetch_paper(paper_id):
 		connection_pool.putconn(conn)
 
 
+def fetch_paper_details(user_id, paper_id):
+	"""
+	Fetch the paper details, library status, and upvotes (OUTDATED!) of a specific paper
+
+	Args
+		user_id: string
+		paper_id: string
+
+	Return
+		List[List[string]]
+	"""
+	conn = connection_pool.getconn()
+
+	try:
+		with conn.cursor() as cursor:
+			cursor.execute("""
+				SELECT 
+					papers.*, 
+					user_votes.vote AS user_vote,
+					user_papers.status AS user_paper_status
+				FROM papers
+				LEFT JOIN user_votes ON papers.id = user_votes.paper_id AND user_votes.user_id = %s
+				LEFT JOIN user_papers ON papers.id = user_papers.paper_id AND user_papers.user_id = %s
+				WHERE papers.id = %s
+			""", [user_id, user_id, paper_id])
+
+			result = cursor.fetchone()
+			conn.commit()
+
+			return result
+	except Exception as e:
+		print("An error occured:", e)
+	finally:
+		connection_pool.putconn(conn)
+
+
 def fetch_all(num_results, page):
 	"""
 	Fetch all recent papers in database
@@ -95,6 +131,45 @@ def fetch_all(num_results, page):
 				)
 			records = cursor.fetchall()
 			return records
+	except Exception as e:
+		print("An error occurred:", e)
+	finally:
+		connection_pool.putconn(conn)
+
+
+def fetch_all_details(user_id, num_results, page):
+	"""
+	Fetch the paper details, library status, and upvotes (OUTDATED!) of most recent papers
+
+	Args
+		user_id: string
+		num_results: int
+		page: int
+
+	Return
+		List[List[string]]
+	"""
+	conn = connection_pool.getconn()
+
+	try:
+		with conn.cursor() as cursor:
+			cursor.execute("""
+				SELECT 
+					papers.*,
+					user_votes.vote AS user_vote,
+					user_papers.status AS user_paper_status
+				FROM papers
+				LEFT JOIN user_votes ON papers.id = user_votes.paper_id AND user_votes.user_id = %s
+				LEFT JOIN user_papers ON papers.id = user_papers.paper_id AND user_papers.user_id = %s
+				ORDER BY papers.publish_date DESC
+				LIMIT %s
+				OFFSET %s
+			""", [user_id, user_id, num_results, ((page - 1) * num_results)])
+
+			results = cursor.fetchall()
+			conn.commit()
+
+			return results
 	except Exception as e:
 		print("An error occurred:", e)
 	finally:
@@ -365,81 +440,6 @@ def check_user_paper_exists(user_id, paper_id):
 			result = cursor.fetchone()
 
 			return result[0] if result else False
-	except Exception as e:
-		print("An error occurred:", e)
-	finally:
-		connection_pool.putconn(conn)
-
-
-def fetch_paper_details(user_id, paper_id):
-	"""
-	Fetch the paper details, library status, and upvotes (OUTDATED!) of a specific paper
-
-	Args
-		user_id: string
-		paper_id: string
-
-	Return
-		List[List[string]]
-	"""
-	conn = connection_pool.getconn()
-
-	try:
-		with conn.cursor() as cursor:
-			cursor.execute("""
-				SELECT 
-					papers.*, 
-					user_votes.vote AS user_vote,
-					user_papers.status AS user_paper_status
-				FROM papers
-				LEFT JOIN user_votes ON papers.id = user_votes.paper_id AND user_votes.user_id = %s
-				LEFT JOIN user_papers ON papers.id = user_papers.paper_id AND user_papers.user_id = %s
-				WHERE papers.id = %s
-			""", [user_id, user_id, paper_id])
-
-			result = cursor.fetchone()
-			conn.commit()
-
-			return result
-	except Exception as e:
-		print("An error occured:", e)
-	finally:
-		connection_pool.putconn(conn)
-
-
-def fetch_all_details(user_id, num_results, page):
-	"""
-	Fetch the paper details, library status, and upvotes (OUTDATED!) of most recent papers
-
-	Args
-		user_id: string
-		num_results: int
-		page: int
-
-	Return
-		List[List[string]]
-	"""
-	conn = connection_pool.getconn()
-
-	try:
-		with conn.cursor() as cursor:
-			cursor.execute("""
-				SELECT 
-					papers.*,
-					user_votes.vote AS user_vote,
-					user_papers.status AS user_paper_status
-				FROM papers
-				LEFT JOIN user_votes ON papers.id = user_votes.paper_id AND user_votes.user_id = %s
-				LEFT JOIN user_papers ON papers.id = user_papers.paper_id AND user_papers.user_id = %s
-				ORDER BY papers.publish_date DESC
-				LIMIT %s
-				OFFSET %s
-			""", [user_id, user_id, num_results, ((page - 1) * num_results)])
-
-			results = cursor.fetchall()
-			conn.commit()
-
-			return results
 	except Exception as e:
 		print("An error occurred:", e)
 	finally:
