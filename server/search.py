@@ -72,8 +72,6 @@ def search_papers(query, model, sort_type, results_per_page, page_num):
 
 
 
-
-
 def fetch_paper(user_id, paper_id):
 	""" Fetch the details of a paper given its ID
 
@@ -84,12 +82,16 @@ def fetch_paper(user_id, paper_id):
 	Returns:
 		(dict): dictionary containing the details of the paper
 	"""
-	paper = psql.fetch_paper(paper_id)
-
-	if len(paper) > 0:
-		paper = paper[0]
+	print(user_id)
+	if user_id:
+		paper = psql.fetch_paper_details(user_id, paper_id)
 	else:
-		paper = None
+		paper = psql.fetch_paper(paper_id)
+
+		if len(paper) > 0:
+			paper = paper[0]
+		else:
+			paper = None
 
 	if paper is not None:
 		return utils.paper_to_dict( paper )
