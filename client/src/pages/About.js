@@ -55,6 +55,7 @@ const About = () => {
 				<h4>Similar Sites</h4>
 				<p>Since the inception and creation of this website various similar projects of varying scale have been created (as well as some existing prior). Here is a list of similar websites that you might find interesting/useful:</p>
 				<ul className="about-list">
+					<li><a href="https://www.alphaxiv.org">AlphaXiv</a> - Developed by a team of researchers. Can read, discover, and discuss arxiv papers. The closest site that matches RapidPaper's vision.</li>
 					<li><a href="https://arxiv-sanity-lite.com">Arxiv Sanity</a> - Developed by Andrej Karpathy. Able to search papers through text and paper similarity.</li>
 					<li><a href="https://paperswithcode.com">Papers With Code</a> - Developed by MetaAI. Shows globally trending AI research with associated code repositories.</li>
 					<li><a href="https://huggingface.co/papers">Hugging Face Daily Papers</a> - Developed by Hugging Face. A daily curated list by AK of the top AI research papers.</li>
